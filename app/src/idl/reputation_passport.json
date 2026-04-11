@@ -1,0 +1,804 @@
+{
+  "address": "3NQPuNCmLvouhRYJD4LxEFNqg42ooTzh272m4f2BVgkb",
+  "metadata": {
+    "name": "reputation_passport",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Reputation Passport Protocol — on-chain gig worker reputation"
+  },
+  "instructions": [
+    {
+      "name": "emit_work_record",
+      "discriminator": [
+        12,
+        128,
+        221,
+        225,
+        91,
+        219,
+        114,
+        178
+      ],
+      "accounts": [
+        {
+          "name": "passport",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  115,
+                  115,
+                  112,
+                  111,
+                  114,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "worker"
+              }
+            ]
+          }
+        },
+        {
+          "name": "work_record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  111,
+                  114,
+                  107,
+                  95,
+                  114,
+                  101,
+                  99,
+                  111,
+                  114,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "worker"
+              },
+              {
+                "kind": "arg",
+                "path": "record_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "platform",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  108,
+                  97,
+                  116,
+                  102,
+                  111,
+                  114,
+                  109
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "platform_signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "worker",
+          "writable": true
+        },
+        {
+          "name": "treasury",
+          "writable": true
+        },
+        {
+          "name": "platform_signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "record_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "category",
+          "type": {
+            "defined": {
+              "name": "WorkCategory"
+            }
+          }
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "rating",
+          "type": "u8"
+        },
+        {
+          "name": "disputed",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "initialize_passport",
+      "discriminator": [
+        61,
+        77,
+        198,
+        139,
+        101,
+        90,
+        68,
+        137
+      ],
+      "accounts": [
+        {
+          "name": "passport",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  115,
+                  115,
+                  112,
+                  111,
+                  114,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "wallet"
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "counter",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                  101,
+                  114
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "mint_badge",
+      "discriminator": [
+        242,
+        234,
+        237,
+        183,
+        232,
+        245,
+        146,
+        1
+      ],
+      "accounts": [
+        {
+          "name": "passport",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  115,
+                  115,
+                  112,
+                  111,
+                  114,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "counter",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                  101,
+                  114
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "wallet"
+        },
+        {
+          "name": "badge_mint",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "badge_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "wallet"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "badge_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "metadata",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "token_metadata_program",
+          "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "badge_type",
+          "type": {
+            "defined": {
+              "name": "BadgeType"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "register_platform",
+      "discriminator": [
+        115,
+        120,
+        8,
+        254,
+        177,
+        20,
+        8,
+        168
+      ],
+      "accounts": [
+        {
+          "name": "platform",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  108,
+                  97,
+                  116,
+                  102,
+                  111,
+                  114,
+                  109
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "platform_authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "platform_authority"
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "vault PDA that holds the staked SOL"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "platform_authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "stake_amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "PassportAccount",
+      "discriminator": [
+        130,
+        50,
+        43,
+        120,
+        59,
+        73,
+        104,
+        117
+      ]
+    },
+    {
+      "name": "PassportCounter",
+      "discriminator": [
+        128,
+        226,
+        227,
+        25,
+        109,
+        14,
+        6,
+        34
+      ]
+    },
+    {
+      "name": "RegisteredPlatform",
+      "discriminator": [
+        94,
+        140,
+        144,
+        241,
+        227,
+        174,
+        136,
+        95
+      ]
+    },
+    {
+      "name": "WorkRecord",
+      "discriminator": [
+        92,
+        226,
+        123,
+        227,
+        214,
+        85,
+        246,
+        85
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "PlatformNotRegistered",
+      "msg": "Platform is not registered"
+    },
+    {
+      "code": 6001,
+      "name": "PlatformInactive",
+      "msg": "Platform is not active"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidRating",
+      "msg": "Invalid rating, must be 1-5"
+    },
+    {
+      "code": 6003,
+      "name": "DuplicateRecordId",
+      "msg": "Duplicate record ID"
+    },
+    {
+      "code": 6004,
+      "name": "BadgeAlreadyMinted",
+      "msg": "Badge already minted"
+    },
+    {
+      "code": 6005,
+      "name": "BadgeThresholdNotMet",
+      "msg": "Badge threshold not met"
+    },
+    {
+      "code": 6006,
+      "name": "NameTooLong",
+      "msg": "Platform name too long (max 50 chars)"
+    },
+    {
+      "code": 6007,
+      "name": "InsufficientStake",
+      "msg": "Insufficient stake"
+    }
+  ],
+  "types": [
+    {
+      "name": "BadgeType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "FirstGig"
+          },
+          {
+            "name": "TrustedWorker"
+          },
+          {
+            "name": "MultiPlatform"
+          },
+          {
+            "name": "ZeroDisputes"
+          },
+          {
+            "name": "DomainExpert"
+          },
+          {
+            "name": "EarlyAdopter"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PassportAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "overall_score",
+            "type": "u8"
+          },
+          {
+            "name": "total_gigs",
+            "type": "u32"
+          },
+          {
+            "name": "dispute_count",
+            "type": "u32"
+          },
+          {
+            "name": "total_earned",
+            "type": "u64"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "last_updated",
+            "type": "i64"
+          },
+          {
+            "name": "badge_count",
+            "type": "u8"
+          },
+          {
+            "name": "sum_ratings",
+            "type": "u32"
+          },
+          {
+            "name": "last_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "unique_platforms",
+            "type": "u8"
+          },
+          {
+            "name": "category_gigs",
+            "type": {
+              "array": [
+                "u32",
+                5
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PassportCounter",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RegisteredPlatform",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "address",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "stake",
+            "type": "u64"
+          },
+          {
+            "name": "active",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WorkCategory",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Tech"
+          },
+          {
+            "name": "Design"
+          },
+          {
+            "name": "Language"
+          },
+          {
+            "name": "Teaching"
+          },
+          {
+            "name": "Other"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WorkRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "worker",
+            "type": "pubkey"
+          },
+          {
+            "name": "platform",
+            "type": "pubkey"
+          },
+          {
+            "name": "category",
+            "type": {
+              "defined": {
+                "name": "WorkCategory"
+              }
+            }
+          },
+          {
+            "name": "amount_paid",
+            "type": "u64"
+          },
+          {
+            "name": "rating",
+            "type": "u8"
+          },
+          {
+            "name": "disputed",
+            "type": "bool"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "record_id",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

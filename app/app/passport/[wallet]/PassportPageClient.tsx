@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import PassportCard from "@/src/components/PassportCard";
 import CategoryBreakdown from "@/src/components/CategoryBreakdown";
 import BadgeGrid from "@/src/components/BadgeGrid";
 import { usePassport, PassportData } from "@/src/hooks/usePassport";
 import { useWorkRecords } from "@/src/hooks/useWorkRecords";
+import WorkRecordList from "@/src/components/WorkRecordList";
 
 interface PassportPageClientProps {
   wallet: string;
@@ -41,7 +41,7 @@ export default function PassportPageClient({ wallet }: PassportPageClientProps) 
   const walletAddress = isMe ? (publicKey?.toBase58() ?? null) : wallet;
 
   const { passport } = usePassport(walletAddress);
-  const { records } = useWorkRecords(walletAddress);
+  const { records, loading: recordsLoading } = useWorkRecords(walletAddress);
 
   const badges = deriveBadges(passport);
 
@@ -59,8 +59,7 @@ export default function PassportPageClient({ wallet }: PassportPageClientProps) 
       <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center gap-6 px-4">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white mb-2">Reputation Passport</h1>
-          <p className="text-gray-400 text-sm mb-6">Connect your wallet to view your passport</p>
-          <WalletMultiButton />
+          <p className="text-gray-400 text-sm">Connect your wallet using the button in the nav bar.</p>
         </div>
       </main>
     );
@@ -89,7 +88,6 @@ export default function PassportPageClient({ wallet }: PassportPageClientProps) 
             >
               {embedCopied ? "Copied!" : "</> Embed"}
             </button>
-            {isMe && <WalletMultiButton />}
           </div>
         </div>
 
@@ -109,6 +107,18 @@ export default function PassportPageClient({ wallet }: PassportPageClientProps) 
             Badges
           </h2>
           <BadgeGrid badges={badges} totalGigs={passport?.totalGigs ?? 0} />
+        </section>
+
+        <section>
+          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
+            Work History
+            {records.length > 0 && (
+              <span className="ml-2 text-gray-600 font-normal normal-case">
+                ({records.length})
+              </span>
+            )}
+          </h2>
+          <WorkRecordList records={records} loading={recordsLoading} />
         </section>
       </div>
     </main>

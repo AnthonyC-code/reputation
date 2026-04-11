@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import DemoPanel from "@/src/components/DemoPanel";
 import PassportCard from "@/src/components/PassportCard";
 import LiveScoreUpdater from "@/src/components/LiveScoreUpdater";
@@ -42,16 +41,13 @@ export default function DemoPage() {
     <main className="min-h-screen bg-gray-950 text-white">
       {/* Header */}
       <header className="border-b border-gray-800 px-6 py-5">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-white mb-1">
-              Live Demo — Reputation Passport
-            </h1>
-            <p className="text-gray-400 text-sm">
-              Submit an on-chain gig and watch your reputation score update in real time.
-            </p>
-          </div>
-          <WalletMultiButton />
+        <div className="max-w-5xl mx-auto">
+          <h1 className="text-2xl font-bold text-white mb-1">
+            Live Demo — Reputation Passport
+          </h1>
+          <p className="text-gray-400 text-sm">
+            Submit an on-chain gig and watch your reputation score update in real time.
+          </p>
         </div>
       </header>
 

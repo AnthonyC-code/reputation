@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import SolanaWalletProvider from "@/src/components/WalletProvider";
+import NavBar from "@/src/components/NavBar";
 
 export const metadata: Metadata = {
   title: "Reputation Passport",
@@ -15,7 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-gray-950 text-white min-h-screen">
-        <SolanaWalletProvider>{children}</SolanaWalletProvider>
+        <SolanaWalletProvider>
+          <NavBar />
+          {children}
+        </SolanaWalletProvider>
       </body>
     </html>
   );

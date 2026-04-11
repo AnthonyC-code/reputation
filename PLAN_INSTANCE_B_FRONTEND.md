@@ -3,37 +3,59 @@
 
 **Your role:** Build the frontend: passport profile, live demo, verification widget.
 **Stack:** Next.js + TypeScript + @solana/wallet-adapter
-**Coordinate with Instance A at:** Hours 0, 8-10, 16, 20
+**Communication with Instance A:** Git only. Pull at defined checkpoints to pick up artifacts.
 
 ---
 
-## Step 0 — Shared Constants (get from Instance A FIRST)
+## Git Handoff Protocol
 
-Before writing any code, confirm these with Instance A:
+All coordination happens through git. You never talk to Instance A directly.
 
+**You wait for and consume (via `git pull`):**
+- `shared/constants.json` — PDA seeds + cluster (available ~Hour 1, pull before starting chain reads)
+- `shared/idl/reputation_passport.json` — Anchor IDL (available ~Hour 16, pull to wire real chain reads)
+- `shared/program_id.txt` — deployed program ID (available ~Hour 16)
+- `shared/demo_wallet.txt` — seeded demo wallet address (available ~Hour 22)
+
+**Scheduled pull points:** Hour 2, Hour 10, Hour 17, Hour 22. Do not block on these — keep building with mocks if artifacts aren't there yet.
+
+---
+
+## Step 0 — Pull Shared Constants (Hour 2)
+
+Run `git pull`. If `shared/constants.json` exists, use it. If not, use these defaults (Instance A agreed on them):
+
+```json
+{
+  "cluster": "devnet",
+  "pda_seeds": {
+    "passport":    ["passport", "<worker_pubkey>"],
+    "work_record": ["work_record", "<worker_pubkey>", "<record_id_bytes>"],
+    "platform":    ["platform", "<platform_pubkey>"]
+  }
+}
 ```
-Cluster:      devnet
-PDA seeds:
-  passport    = ["passport", worker_pubkey]
-  work_record = ["work_record", worker_pubkey, record_id_bytes]
-  platform    = ["platform", platform_pubkey]
-Treasury pubkey: get from Instance A
-Program ID: get from Instance A after their first deploy (~hour 16)
-```
+
+Program ID won't arrive until ~Hour 16. Build with mock data until then.
 
 ---
 
 ## Timeline
 
-| Hours | Task |
-|-------|------|
-| 0–2 | `create-next-app`, install deps, wallet connect scaffold |
-| 2–4 | Build mock data layer + full UI (no chain reads yet) |
-| 4–8 | Passport profile page complete (reads mock data) |
-| 8–12 | Wire up real IDL + chain reads when Instance A delivers |
-| 12–16 | Demo screen — gig simulator + live score update |
-| 16–20 | Verification widget (any wallet, no connect required) |
-| 20–24 | Polish, end-to-end test with Instance A |
+| Hours | Task | Git action |
+|-------|------|------------|
+| 0–2 | `create-next-app`, install deps, wallet connect scaffold | — |
+| 2 | `git pull` — pick up `shared/constants.json` if available | **PULL** |
+| 2–4 | Build mock data layer + full UI shell (no chain reads) | — |
+| 4–8 | Passport profile page complete reading from mock data | — |
+| 8–10 | Verification widget, embed code — all UI complete | — |
+| 10 | `git pull` — check for early IDL drop | **PULL** |
+| 10–16 | Demo screen UI (DemoPanel + LiveScoreUpdater) with mocks | — |
+| 17 | `git pull` — pick up IDL + program ID from Instance A | **PULL** |
+| 17–20 | Wire real chain reads (replace mocks with Anchor calls) | — |
+| 20–22 | Wire DemoPanel to `emit_work_record` on devnet | — |
+| 22 | `git pull` — pick up demo wallet address | **PULL** |
+| 22–24 | End-to-end test with seeded demo wallet, polish | — |
 
 ---
 
@@ -53,8 +75,10 @@ npm install \
 Create `.env.local`:
 ```
 NEXT_PUBLIC_RPC_URL=https://api.devnet.solana.com
-NEXT_PUBLIC_PROGRAM_ID=<get from Instance A>
+NEXT_PUBLIC_PROGRAM_ID=PLACEHOLDER
 ```
+
+Update `NEXT_PUBLIC_PROGRAM_ID` when `shared/program_id.txt` lands after Hour 16.
 
 ---
 
@@ -79,14 +103,16 @@ app/src/
     useWorkRecords.ts      # getProgramAccounts filtered by worker
   lib/
     anchorClient.ts        # getProgram(connection, wallet)
-    mockData.ts            # placeholder data for hours 0-8
+    mockData.ts            # placeholder data until IDL arrives
+    constants.ts           # loaded from shared/constants.json at build time
   idl/
-    reputation_passport.json  # COPY FROM INSTANCE A when ready
+    reputation_passport.json  # COPY FROM shared/idl/ after git pull at Hour 17
+shared/                    # read-only for Instance B — written by Instance A
 ```
 
 ---
 
-## Mock Data (use for hours 0–8, before IDL arrives)
+## Mock Data (use Hours 0–17, before IDL arrives)
 
 ```typescript
 // src/lib/mockData.ts
@@ -110,6 +136,9 @@ export const MOCK_RECORDS = [
 ]
 
 export const MOCK_BADGES = ["FirstGig", "TrustedWorker", "MultiPlatform"]
+
+// Placeholder — replace with value from shared/program_id.txt after Hour 16 pull
+export const PLACEHOLDER_DEMO_WALLET = "7xK3mNpQrSt2uVwXyZ1aB3cD4eF5gH6iJ7kL8mPq9"
 ```
 
 ---
@@ -173,7 +202,7 @@ After TX confirms:
 // Derive PDA: ["passport", walletPubkey]
 // Fetch with program.account.passportAccount.fetch(pda)
 // Return: { passport, loading, error }
-// Use mock data if program not initialized yet
+// Fall back to MOCK_PASSPORT if program not initialized yet
 ```
 
 ### `useWorkRecords.ts`
@@ -182,6 +211,7 @@ After TX confirms:
 //   { memcmp: { offset: 8, bytes: walletPubkey.toBase58() } }  // filter by worker
 // ])
 // Return sorted by timestamp descending
+// Fall back to MOCK_RECORDS if program not initialized yet
 ```
 
 ---
@@ -196,7 +226,7 @@ After TX confirms:
 
 ### `demo.tsx`
 - Split layout: left = DemoPanel, right = live PassportCard + LiveScoreUpdater
-- Pre-populate with Instance A's seeded demo wallet address
+- Pre-populate demo wallet from `shared/demo_wallet.txt` (read at Hour 22 pull); fall back to placeholder until then
 - Step-by-step instructions visible on page for judges
 
 ### `index.tsx`
@@ -212,11 +242,13 @@ export default function Home() {
 
 ---
 
-## Wiring Up Real Chain Data (Hour 8-12)
+## Wiring Up Real Chain Data (Hour 17, after git pull)
 
-When Instance A sends you the IDL:
-1. Copy `reputation_passport.json` → `src/idl/`
-2. Update `anchorClient.ts`:
+When `shared/idl/reputation_passport.json` and `shared/program_id.txt` land:
+
+1. Copy `shared/idl/reputation_passport.json` → `app/src/idl/`
+2. Read program ID from `shared/program_id.txt`, set `NEXT_PUBLIC_PROGRAM_ID` in `.env.local`
+3. Update `anchorClient.ts`:
 ```typescript
 import idl from '../idl/reputation_passport.json'
 import { Program, AnchorProvider } from '@project-serum/anchor'
@@ -226,8 +258,14 @@ export function getProgram(connection, wallet) {
   return new Program(idl as any, process.env.NEXT_PUBLIC_PROGRAM_ID, provider)
 }
 ```
-3. Replace mock data in hooks with real `program.account.*` calls
-4. Test on devnet with Instance A's seeded wallet address
+4. Replace mock fallbacks in hooks with real `program.account.*` calls
+5. Test on devnet
+
+---
+
+## If IDL is Late (still missing at Hour 17)
+
+Keep mocks running. Wire chain reads in Hour 20–22 instead. The UI is complete and functional with mocks — judges can still see the product. Prioritize the live demo wiring over polish.
 
 ---
 
@@ -247,7 +285,7 @@ const embedCode = `<iframe src="https://your-app.vercel.app/passport/${walletAdd
 
 - [ ] `npm run dev` starts without errors
 - [ ] Wallet connect works with Phantom on devnet
-- [ ] `/passport/me` shows seeded passport data from Instance A's wallet
+- [ ] `/passport/me` shows seeded passport data (from `shared/demo_wallet.txt` after Hour 22 pull)
 - [ ] `/demo` — clicking "Complete Gig" sends TX, score updates live
 - [ ] `/passport/[any_address]` — shows passport without wallet connected
 - [ ] Embed code copy works

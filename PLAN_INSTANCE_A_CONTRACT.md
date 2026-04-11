@@ -3,37 +3,59 @@
 
 **Your role:** Build and deploy the Solana smart contract.
 **Stack:** Rust + Anchor
-**Coordinate with Instance B at:** Hours 0, 8-10, 16, 20
+**Communication with Instance B:** Git only. Push to `main` at defined checkpoints. Instance B pulls when ready.
 
 ---
 
-## Step 0 — Shared Constants (agree with Instance B FIRST)
+## Git Handoff Protocol
 
-Before writing any code, confirm these with Instance B:
+All coordination happens through commits to the shared repo. You never talk to Instance B directly.
 
+**You own and commit:**
+- `shared/constants.json` — PDA seeds, cluster, treasury pubkey (commit at Hour 1)
+- `shared/program_id.txt` — program ID after first deploy (commit after Hour 16 deploy)
+- `shared/idl/reputation_passport.json` — IDL after deploy (commit after Hour 16 deploy)
+- `shared/demo_wallet.txt` — seeded demo wallet address (commit at Hour 22)
+
+Instance B will `git pull` to pick these up. Do not assume they pull immediately.
+
+---
+
+## Step 0 — Commit Shared Constants First (Hour 1)
+
+Before writing contract logic, create and push `shared/constants.json`:
+
+```json
+{
+  "cluster": "devnet",
+  "pda_seeds": {
+    "passport":    ["passport", "<worker_pubkey>"],
+    "work_record": ["work_record", "<worker_pubkey>", "<record_id_bytes>"],
+    "platform":    ["platform", "<platform_pubkey>"]
+  },
+  "treasury_pubkey": "<generate a keypair, put pubkey here>"
+}
 ```
-Cluster:      devnet
-PDA seeds:
-  passport    = ["passport", worker_pubkey]
-  work_record = ["work_record", worker_pubkey, record_id_bytes]
-  platform    = ["platform", platform_pubkey]
-Treasury pubkey: generate a keypair, share the pubkey with Instance B
-Program ID: will be known after first deploy — share with Instance B
-```
+
+Push immediately. Instance B cannot start wiring chain reads until they have this.
 
 ---
 
 ## Timeline
 
-| Hours | Task |
-|-------|------|
-| 0–1 | `anchor init reputation-passport`, define structs + errors |
-| 1–4 | `initialize_passport`, `register_platform` instructions |
-| 4–8 | `emit_work_record` + fee split escrow |
-| 8–12 | `recompute_score` logic (on-chain) |
-| 12–16 | `mint_badge` soulbound tokens via Metaplex |
-| 16–20 | Anchor tests, deploy to devnet, export IDL → send to Instance B |
-| 20–24 | Bug fixes, seed devnet demo wallet |
+| Hours | Task | Git action |
+|-------|------|------------|
+| 0–1 | `anchor init reputation-passport`, define structs + errors | — |
+| 1 | Generate treasury keypair, write `shared/constants.json` | **PUSH** |
+| 1–4 | `initialize_passport`, `register_platform` instructions | — |
+| 4–8 | `emit_work_record` + fee split escrow | — |
+| 8–12 | `recompute_score` logic (on-chain) | — |
+| 12–16 | `mint_badge` soulbound tokens via Metaplex | — |
+| 16 | `anchor build && anchor deploy --provider.cluster devnet` | **PUSH** `shared/program_id.txt` + `shared/idl/reputation_passport.json` |
+| 16–20 | Anchor tests, bug fixes | — |
+| 20–22 | Seed devnet demo wallet (10-15 varied WorkRecords, 3 mock platforms) | — |
+| 22 | Write seeded wallet address to `shared/demo_wallet.txt` | **PUSH** |
+| 22–24 | Final bug fixes, verify demo wallet reads correctly | — |
 
 ---
 
@@ -56,6 +78,12 @@ programs/reputation-passport/src/
   constants.rs
 tests/
   reputation-passport.ts
+shared/
+  constants.json            # commit Hour 1
+  program_id.txt            # commit after deploy (~Hour 16)
+  demo_wallet.txt           # commit Hour 22
+  idl/
+    reputation_passport.json  # commit after deploy (~Hour 16)
 Anchor.toml
 Cargo.toml
 ```
@@ -66,17 +94,20 @@ Cargo.toml
 
 ### `passport.rs`
 ```rust
-// space = 8 + 32 + 1 + 4 + 4 + 8 + 8 + 8 + 1 = 74
+// space = 8 + 32 + 1 + 4 + 4 + 8 + 8 + 8 + 1 + 4 + 8 + 1 = 87
 #[account]
 pub struct PassportAccount {
-    pub owner:         Pubkey,
-    pub overall_score: u8,        // 0-100
-    pub total_gigs:    u32,
-    pub dispute_count: u32,
-    pub total_earned:  u64,       // lamports lifetime
-    pub created_at:    i64,
-    pub last_updated:  i64,
-    pub badge_count:   u8,
+    pub owner:            Pubkey,
+    pub overall_score:    u8,        // 0-100
+    pub total_gigs:       u32,
+    pub dispute_count:    u32,
+    pub total_earned:     u64,       // lamports lifetime
+    pub created_at:       i64,
+    pub last_updated:     i64,
+    pub badge_count:      u8,
+    pub sum_ratings:      u32,       // for recompute_score
+    pub last_timestamp:   i64,       // for recency score
+    pub unique_platforms: u8,        // capped at 5 for diversity score
 }
 ```
 
@@ -144,7 +175,6 @@ let treasury_amount = amount - worker_amount - platform_amount;
 ### `recompute_score` (internal, not public)
 No floating point in Rust — use integer math scaled ×100:
 ```rust
-// Inputs: passport aggregates (total_gigs, dispute_count, sum_ratings, last_timestamp)
 // avg_rating_component = (sum_ratings * 100 / total_gigs / 5) * 35 / 100
 // dispute_component    = ((total_gigs - dispute_count) * 100 / total_gigs) * 25 / 100
 // volume_component     = min(total_gigs, 100) * 20 / 100
@@ -152,9 +182,7 @@ No floating point in Rust — use integer math scaled ×100:
 // diversity_component  = min(unique_platforms, 5) * 10 / 5
 // overall_score        = sum, capped at 100
 ```
-Store aggregates on `PassportAccount` to avoid iterating all WorkRecords on-chain:
-- Add fields: `sum_ratings: u32`, `last_timestamp: i64` to `PassportAccount`
-- Track `unique_platforms` via a small bitmap or just cap it at 5
+Store aggregates on `PassportAccount` to avoid iterating all WorkRecords on-chain.
 
 ### `mint_badge`
 - Check thresholds against `PassportAccount` fields
@@ -164,7 +192,7 @@ Store aggregates on `PassportAccount` to avoid iterating all WorkRecords on-chai
 ```
 FirstGig       → total_gigs >= 1
 TrustedWorker  → total_gigs >= 50, dispute_count / total_gigs < 5%
-MultiPlatform  → tracked platform count >= 3
+MultiPlatform  → unique_platforms >= 3
 ZeroDisputes   → total_gigs >= 20, dispute_count == 0
 DomainExpert   → any single category has >= 25 gigs (track per-category counter)
 EarlyAdopter   → global passport counter <= 1000 (counter PDA)
@@ -220,9 +248,11 @@ mint_badge
 
 ## Deliverable Checklist
 
+- [ ] `shared/constants.json` pushed by Hour 1
 - [ ] Program builds: `anchor build`
 - [ ] Tests pass: `anchor test`
 - [ ] Deployed to devnet: `anchor deploy --provider.cluster devnet`
-- [ ] IDL exported: `target/idl/reputation_passport.json` — **send this to Instance B**
-- [ ] Program ID shared with Instance B
-- [ ] Demo wallet seeded: run a script that calls `emit_work_record` 10-15 times with varied data across 3 mock platform keypairs — share that wallet address with Instance B
+- [ ] `shared/program_id.txt` pushed after deploy
+- [ ] `shared/idl/reputation_passport.json` pushed after deploy
+- [ ] Demo wallet seeded: 10-15 `emit_work_record` calls, varied data, 3 mock platforms
+- [ ] `shared/demo_wallet.txt` pushed by Hour 22

@@ -88,18 +88,20 @@ const SEED_RECORDS: Array<{
   rating:   number;
   disputed: boolean;
 }> = [
-  { category: { tech: {}     }, amount: 500_000_000, rating: 5, disputed: false },
-  { category: { design: {}   }, amount: 300_000_000, rating: 4, disputed: false },
-  { category: { tech: {}     }, amount: 250_000_000, rating: 5, disputed: false },
-  { category: { language: {} }, amount: 100_000_000, rating: 5, disputed: false },
-  { category: { tech: {}     }, amount: 400_000_000, rating: 4, disputed: false },
-  { category: { design: {}   }, amount: 150_000_000, rating: 3, disputed: true  },
-  { category: { teaching: {} }, amount: 200_000_000, rating: 5, disputed: false },
-  { category: { tech: {}     }, amount: 350_000_000, rating: 5, disputed: false },
-  { category: { other: {}    }, amount:  80_000_000, rating: 4, disputed: false },
-  { category: { tech: {}     }, amount: 600_000_000, rating: 5, disputed: false },
-  { category: { design: {}   }, amount: 220_000_000, rating: 4, disputed: false },
-  { category: { language: {} }, amount: 130_000_000, rating: 5, disputed: false },
+  // Amounts reduced to ~2_000_000 lamports (0.002 SOL) each so 3 platforms
+  // funded at 0.15 SOL can cover all 12 records + rent without running dry
+  { category: { tech: {}     }, amount: 2_000_000, rating: 5, disputed: false },
+  { category: { design: {}   }, amount: 2_000_000, rating: 4, disputed: false },
+  { category: { tech: {}     }, amount: 2_000_000, rating: 5, disputed: false },
+  { category: { language: {} }, amount: 2_000_000, rating: 5, disputed: false },
+  { category: { tech: {}     }, amount: 2_000_000, rating: 4, disputed: false },
+  { category: { design: {}   }, amount: 2_000_000, rating: 3, disputed: true  },
+  { category: { teaching: {} }, amount: 2_000_000, rating: 5, disputed: false },
+  { category: { tech: {}     }, amount: 2_000_000, rating: 5, disputed: false },
+  { category: { other: {}    }, amount: 2_000_000, rating: 4, disputed: false },
+  { category: { tech: {}     }, amount: 2_000_000, rating: 5, disputed: false },
+  { category: { design: {}   }, amount: 2_000_000, rating: 4, disputed: false },
+  { category: { language: {} }, amount: 2_000_000, rating: 5, disputed: false },
 ];
 
 // ── Main ──────────────────────────────────────────────────────────────────────
@@ -129,15 +131,33 @@ async function main() {
   const demoWorker = Keypair.generate();
   console.log(`\nDemo worker: ${demoWorker.publicKey.toBase58()}`);
 
-  // Fund platforms and demo worker
-  console.log("\nFunding accounts...");
-  for (const kp of [...platforms, demoWorker]) {
-    const sig = await connection.requestAirdrop(kp.publicKey, 2 * LAMPORTS_PER_SOL);
-    await confirm(connection, sig);
+  // Fund platforms and demo worker via direct transfer from payer
+  // (avoids devnet airdrop rate limits; costs ~0.5 SOL total from payer)
+  console.log("\nFunding accounts via payer transfer...");
+  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+
+  async function fundFromPayer(dest: PublicKey, lamports: number) {
+    const tx = new anchor.web3.Transaction().add(
+      anchor.web3.SystemProgram.transfer({
+        fromPubkey: payer.publicKey,
+        toPubkey: dest,
+        lamports,
+      })
+    );
+    tx.recentBlockhash = blockhash;
+    tx.feePayer = payer.publicKey;
+    tx.sign(payer);
+    const sig = await connection.sendRawTransaction(tx.serialize());
+    await connection.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight }, "confirmed");
   }
-  // Fund treasury so it stays rent-exempt
-  const tsig = await connection.requestAirdrop(treasuryPubkey, LAMPORTS_PER_SOL);
-  await confirm(connection, tsig);
+
+  // 0.15 SOL per platform (covers 0.1 stake + rent for accounts + tx fees)
+  for (const kp of platforms) {
+    await fundFromPayer(kp.publicKey, 150_000_000);
+  }
+  // Demo worker and treasury just need rent-exempt minimum
+  await fundFromPayer(demoWorker.publicKey, 10_000_000);
+  await fundFromPayer(treasuryPubkey,       10_000_000);
 
   // Initialize passport for demo worker
   console.log("\nInitializing passport...");

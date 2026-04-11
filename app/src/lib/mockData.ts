@@ -1,6 +1,6 @@
 // Mock data used when chain reads aren't wired yet (hours 0-8 per plan)
 export const MOCK_PASSPORT = {
-  owner: "9FYcDJUSE1RqzAMeGyaNRKCMRVQZxo4d1sckCw6sue88",
+  owner: "CSk1sRsPLQyMA9JP5NhxVdh1HdfEyRYhpEsg46hvk3F7",
   overallScore: 75,
   totalGigs: 12,
   disputeCount: 1,

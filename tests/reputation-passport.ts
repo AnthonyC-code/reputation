@@ -7,7 +7,7 @@ import {
   LAMPORTS_PER_SOL,
 } from "@solana/web3.js";
 
-const PROGRAM_ID = new PublicKey("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+const PROGRAM_ID = new PublicKey("3NQPuNCmLvouhRYJD4LxEFNqg42ooTzh272m4f2BVgkb");
 const PLATFORM_STAKE_MIN = 100_000_000; // 0.1 SOL
 
 // ── PDA helpers ───────────────────────────────────────────────────────────────

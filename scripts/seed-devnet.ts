@@ -108,8 +108,8 @@ async function main() {
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
 
-  // @ts-ignore
-  const program = anchor.workspace.ReputationPassport as anchor.Program;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const program = anchor.workspace.ReputationPassport as any;
   const connection = provider.connection;
   const payer = (provider.wallet as anchor.Wallet).payer;
 

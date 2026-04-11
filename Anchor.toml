@@ -3,10 +3,10 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-reputation_passport = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+reputation_passport = "3NQPuNCmLvouhRYJD4LxEFNqg42ooTzh272m4f2BVgkb"
 
 [programs.devnet]
-reputation_passport = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+reputation_passport = "3NQPuNCmLvouhRYJD4LxEFNqg42ooTzh272m4f2BVgkb"
 
 [registry]
 url = "https://api.apr.dev"

@@ -10,7 +10,7 @@ use instructions::register_platform::*;
 use instructions::emit_work_record::*;
 use instructions::mint_badge::*;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("3NQPuNCmLvouhRYJD4LxEFNqg42ooTzh272m4f2BVgkb");
 
 #[program]
 pub mod reputation_passport {

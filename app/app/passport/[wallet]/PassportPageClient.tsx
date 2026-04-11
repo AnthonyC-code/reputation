@@ -1,20 +1,41 @@
 "use client";
 
+import { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import PassportCard from "@/src/components/PassportCard";
 import CategoryBreakdown from "@/src/components/CategoryBreakdown";
 import BadgeGrid from "@/src/components/BadgeGrid";
-import { usePassport } from "@/src/hooks/usePassport";
+import { usePassport, PassportData } from "@/src/hooks/usePassport";
 import { useWorkRecords } from "@/src/hooks/useWorkRecords";
-import { MOCK_BADGES } from "@/src/lib/mockData";
 
 interface PassportPageClientProps {
   wallet: string;
 }
 
+/** Derive which badges this passport has earned from on-chain aggregates. */
+function deriveBadges(passport: PassportData | null): string[] {
+  if (!passport) return [];
+  const earned: string[] = [];
+
+  const { totalGigs, disputeCount, uniquePlatforms, categoryGigs } = passport;
+  const disputeRate = totalGigs > 0 ? disputeCount / totalGigs : 0;
+  const maxCategoryGigs = Math.max(...categoryGigs);
+
+  if (totalGigs >= 1)                          earned.push("FirstGig");
+  if (totalGigs >= 50 && disputeRate < 0.05)   earned.push("TrustedWorker");
+  if (uniquePlatforms >= 3)                    earned.push("MultiPlatform");
+  if (totalGigs >= 20 && disputeCount === 0)   earned.push("ZeroDisputes");
+  if (maxCategoryGigs >= 25)                   earned.push("DomainExpert");
+  // EarlyAdopter: on-chain badge count exceeds what rule-based check gives
+  if (earned.length < passport.badgeCount)     earned.push("EarlyAdopter");
+
+  return earned;
+}
+
 export default function PassportPageClient({ wallet }: PassportPageClientProps) {
   const { publicKey, connected } = useWallet();
+  const [embedCopied, setEmbedCopied] = useState(false);
 
   const isMe = wallet === "me";
   const walletAddress = isMe ? (publicKey?.toBase58() ?? null) : wallet;
@@ -22,9 +43,16 @@ export default function PassportPageClient({ wallet }: PassportPageClientProps) 
   const { passport } = usePassport(walletAddress);
   const { records } = useWorkRecords(walletAddress);
 
-  // Derive badge list from passport or fall back to mock
-  const badges: string[] =
-    passport && passport.badgeCount > 0 ? MOCK_BADGES : MOCK_BADGES;
+  const badges = deriveBadges(passport);
+
+  function copyEmbed() {
+    if (!walletAddress) return;
+    const embedCode = `<iframe src="${window.location.origin}/passport/${walletAddress}" width="420" height="320" frameborder="0" style="border-radius:16px;"></iframe>`;
+    navigator.clipboard.writeText(embedCode).then(() => {
+      setEmbedCopied(true);
+      setTimeout(() => setEmbedCopied(false), 2000);
+    });
+  }
 
   if (isMe && !connected) {
     return (
@@ -49,19 +77,21 @@ export default function PassportPageClient({ wallet }: PassportPageClientProps) 
   return (
     <main className="min-h-screen bg-gray-950 py-10 px-4">
       <div className="max-w-xl mx-auto space-y-6">
-        {/* Header row with wallet button when viewing own passport */}
-        {isMe && (
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold text-white">My Passport</h1>
-            <WalletMultiButton />
-          </div>
-        )}
-
-        {!isMe && (
+        {/* Header row */}
+        <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold text-white">
-            Reputation Passport
+            {isMe ? "My Passport" : "Reputation Passport"}
           </h1>
-        )}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={copyEmbed}
+              className="text-xs px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-300 hover:text-white hover:border-gray-500 transition-colors"
+            >
+              {embedCopied ? "Copied!" : "</> Embed"}
+            </button>
+            {isMe && <WalletMultiButton />}
+          </div>
+        </div>
 
         <PassportCard passport={passport} walletAddress={walletAddress} />
 

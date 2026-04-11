@@ -119,11 +119,17 @@ async function main() {
   console.log(`Treasury:  ${treasuryPubkey.toBase58()}`);
   console.log(`Payer:     ${payer.publicKey.toBase58()}`);
 
-  // Create 3 mock platform keypairs
+  // Deterministic platform keypairs — must match DemoPanel.tsx seedBuf() exactly
+  function seedBuf(label: string): Uint8Array {
+    const buf = Buffer.alloc(32, 0);
+    Buffer.from(label).copy(buf, 0, 0, 32);
+    return buf;
+  }
+
   const platforms: Keypair[] = [
-    Keypair.generate(), // Soleer Mock
-    Keypair.generate(), // Gibwork Mock
-    Keypair.generate(), // Superteam Mock
+    Keypair.fromSeed(seedBuf("soleer-mock-platform-seed")),    // Soleer Mock
+    Keypair.fromSeed(seedBuf("gibwork-mock-platform-seed")),   // Gibwork Mock
+    Keypair.fromSeed(seedBuf("superteam-mock-platform-seed")), // Superteam Mock
   ];
   const platformNames = ["Soleer Mock", "Gibwork Mock", "Superteam Mock"];
 

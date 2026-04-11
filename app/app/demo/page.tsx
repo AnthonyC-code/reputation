@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import DemoPanel from "@/src/components/DemoPanel";
 import PassportCard from "@/src/components/PassportCard";
 import LiveScoreUpdater from "@/src/components/LiveScoreUpdater";
@@ -8,14 +10,21 @@ import { usePassport } from "@/src/hooks/usePassport";
 import { DEMO_WALLET } from "@/src/lib/constants";
 
 export default function DemoPage() {
+  const { publicKey, connected } = useWallet();
   const [lastTxSig, setLastTxSig] = useState<string | null>(null);
   const [prevScore, setPrevScore] = useState<number | null>(null);
   const [liveScore, setLiveScore] = useState<number | null>(null);
 
-  const { passport, refresh } = usePassport(DEMO_WALLET);
+  // Show connected wallet's passport; fall back to demo wallet
+  const activeWallet = connected && publicKey
+    ? publicKey.toBase58()
+    : DEMO_WALLET;
+
+  const { passport, refresh } = usePassport(activeWallet);
 
   function handleGigComplete(txSig: string) {
     setLastTxSig(txSig);
+    setLiveScore(null);
     setPrevScore(passport?.overallScore ?? 0);
   }
 
@@ -33,13 +42,16 @@ export default function DemoPage() {
     <main className="min-h-screen bg-gray-950 text-white">
       {/* Header */}
       <header className="border-b border-gray-800 px-6 py-5">
-        <div className="max-w-5xl mx-auto">
-          <h1 className="text-2xl font-bold text-white mb-1">
-            Live Demo — Reputation Passport
-          </h1>
-          <p className="text-gray-400 text-sm">
-            Submit an on-chain gig and watch your reputation score update in real time.
-          </p>
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-white mb-1">
+              Live Demo — Reputation Passport
+            </h1>
+            <p className="text-gray-400 text-sm">
+              Submit an on-chain gig and watch your reputation score update in real time.
+            </p>
+          </div>
+          <WalletMultiButton />
         </div>
       </header>
 
@@ -75,7 +87,7 @@ export default function DemoPage() {
               <div className="mt-4 bg-gray-900 border border-gray-700 rounded-xl px-4 py-3">
                 <LiveScoreUpdater
                   key={lastTxSig}
-                  walletAddress={DEMO_WALLET}
+                  walletAddress={activeWallet}
                   prevScore={prevScore}
                   onUpdate={handleScoreUpdate}
                 />
@@ -86,9 +98,9 @@ export default function DemoPage() {
           {/* Right: Live passport card */}
           <div>
             <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-3">
-              Demo Wallet Passport
+              {connected ? "Your Passport" : "Demo Wallet Passport"}
             </p>
-            <PassportCard passport={displayPassport} walletAddress={DEMO_WALLET} />
+            <PassportCard passport={displayPassport} walletAddress={activeWallet} />
           </div>
         </div>
       </div>

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import { BN } from "@coral-xyz/anchor";
-import { getProgram, passportPda, workRecordPda, platformPda } from "@/lib/anchorClient";
+import { getProgram, passportPda, workRecordPda, platformPda, counterPda } from "@/lib/anchorClient";
 import { TREASURY_PUBKEY, LAMPORTS_PER_SOL_NUM, RPC_URL } from "@/lib/constants";
 
 // Deterministic platform keypairs from fixed 32-byte seeds
@@ -106,11 +106,27 @@ export default function DemoPanel({ onGigComplete }: DemoPanelProps) {
       const [passportPdaKey] = passportPda(publicKey);
       const [workRecordPdaKey] = workRecordPda(publicKey, recordIdBuf);
       const [platformPdaKey] = platformPda(platformKeypair.publicKey);
+      const [counterKey] = counterPda();
       const treasury = new PublicKey(TREASURY_PUBKEY);
 
       const amountLamports = new BN(
         Math.round(parseFloat(amountSol) * LAMPORTS_PER_SOL_NUM)
       );
+
+      // Auto-initialize passport if it doesn't exist yet
+      const passportInfo = await connection.getAccountInfo(passportPdaKey);
+      if (!passportInfo) {
+        await (program.methods as any)
+          .initializePassport()
+          .accounts({
+            passport: passportPdaKey,
+            wallet: publicKey,
+            payer: publicKey,
+            counter: counterKey,
+            systemProgram: SystemProgram.programId,
+          })
+          .rpc();
+      }
 
       const sig = await (program.methods as any)
         .emitWorkRecord(

@@ -34,3 +34,7 @@ export function platformPda(authority: PublicKey): [PublicKey, number] {
     PROGRAM_ID
   );
 }
+
+export function counterPda(): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync([Buffer.from("counter")], PROGRAM_ID);
+}

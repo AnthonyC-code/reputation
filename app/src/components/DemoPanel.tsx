@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
-import { Keypair, PublicKey, SystemProgram, SendTransactionError } from "@solana/web3.js";
+import { Keypair, PublicKey, SystemProgram, Transaction, SendTransactionError } from "@solana/web3.js";
 import { BN } from "@coral-xyz/anchor";
 import { getProgram, passportPda, workRecordPda, platformPda, counterPda } from "@/lib/anchorClient";
 import { TREASURY_PUBKEY, LAMPORTS_PER_SOL_NUM, RPC_URL } from "@/lib/constants";
@@ -53,7 +53,7 @@ interface DemoPanelProps {
 }
 
 export default function DemoPanel({ onGigComplete }: DemoPanelProps) {
-  const { publicKey, signTransaction, signAllTransactions } = useWallet();
+  const { publicKey, signTransaction, signAllTransactions, sendTransaction } = useWallet();
   const { connection } = useConnection();
 
   const [platform, setPlatform] = useState<string>(PLATFORMS[0]);
@@ -77,7 +77,7 @@ export default function DemoPanel({ onGigComplete }: DemoPanelProps) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!publicKey || !signTransaction || !signAllTransactions) return;
+    if (!publicKey || !signTransaction || !signAllTransactions || !sendTransaction) return;
 
     setLoading(true);
     setError(null);
@@ -112,6 +112,33 @@ export default function DemoPanel({ onGigComplete }: DemoPanelProps) {
       const amountLamports = new BN(
         Math.round(parseFloat(amountSol) * LAMPORTS_PER_SOL_NUM)
       );
+
+      // Fund the platform_signer if it doesn't have enough SOL.
+      // After the tx, platform_signer retains 4% of amount (platform fee).
+      // That remainder must be >= base rent-exemption, or the runtime rejects
+      // the tx even though the program itself succeeds.
+      // So we need: work_record_rent + gig_amount + base_rent_exemption + buffer
+      const WORK_RECORD_SIZE = 123; // 8+32+32+1+8+1+1+8+32
+      const [rentExemption, baseRentExemption] = await Promise.all([
+        connection.getMinimumBalanceForRentExemption(WORK_RECORD_SIZE),
+        connection.getMinimumBalanceForRentExemption(0),
+      ]);
+      const platformAcctInfo = await connection.getAccountInfo(platformKeypair.publicKey);
+      const currentPlatformBalance = platformAcctInfo?.lamports ?? 0;
+      const needed = rentExemption + amountLamports.toNumber() + baseRentExemption + 10_000;
+      if (currentPlatformBalance < needed) {
+        const fundAmount = needed - currentPlatformBalance;
+        const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+        const fundTx = new Transaction({ feePayer: publicKey, blockhash, lastValidBlockHeight }).add(
+          SystemProgram.transfer({
+            fromPubkey: publicKey,
+            toPubkey: platformKeypair.publicKey,
+            lamports: fundAmount,
+          })
+        );
+        const fundSig = await sendTransaction(fundTx, connection);
+        await connection.confirmTransaction({ signature: fundSig, blockhash, lastValidBlockHeight });
+      }
 
       // Auto-initialize passport if it doesn't exist yet
       const passportInfo = await connection.getAccountInfo(passportPdaKey);

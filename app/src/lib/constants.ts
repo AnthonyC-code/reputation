@@ -1,5 +1,5 @@
 export const RPC_URL =
-  process.env.NEXT_PUBLIC_RPC_URL ?? "http://127.0.0.1:8899";
+  process.env.NEXT_PUBLIC_RPC_URL ?? "https://api.devnet.solana.com";
 
 export const DEMO_WALLET =
   process.env.NEXT_PUBLIC_DEMO_WALLET ??

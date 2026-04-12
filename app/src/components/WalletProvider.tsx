@@ -6,8 +6,6 @@ import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { useMemo } from "react";
 import { RPC_URL } from "@/lib/constants";
 
-require("@solana/wallet-adapter-react-ui/styles.css");
-
 export default function SolanaWalletProvider({ children }: { children: React.ReactNode }) {
   const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
 

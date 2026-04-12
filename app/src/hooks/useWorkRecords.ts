@@ -129,8 +129,7 @@ export function useWorkRecords(
         setRecords(data);
       } catch (err) {
         if (cancelled) return;
-        // Fall back to mock data on any fetch failure
-        setRecords(normalizeMockRecords());
+        setRecords([]);
         setError(err instanceof Error ? err.message : "Failed to fetch work records");
       } finally {
         if (!cancelled) setLoading(false);

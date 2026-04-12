@@ -1,5 +1,5 @@
 # wildhacks2026
-## Reputation Passport Protocol — Technical Brief for Claude Code
+## Reputation Passport Protocol
 
 ---
 

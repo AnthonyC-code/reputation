@@ -52,26 +52,6 @@ export default function DemoPage() {
       </header>
 
       <div className="max-w-5xl mx-auto px-6 py-8">
-        {/* Step instructions */}
-        <ol className="flex flex-wrap gap-3 mb-8">
-          {[
-            "Connect your Phantom wallet",
-            "Fill in the gig form",
-            "Click Complete Gig",
-            "Watch your score update live",
-          ].map((step, i) => (
-            <li
-              key={i}
-              className="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-xl px-4 py-2 text-sm"
-            >
-              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-indigo-600 text-white text-xs flex items-center justify-center font-bold">
-                {i + 1}
-              </span>
-              <span className="text-gray-300">{step}</span>
-            </li>
-          ))}
-        </ol>
-
         {/* Split layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           {/* Left: Gig form */}

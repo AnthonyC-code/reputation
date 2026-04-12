@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
-import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
+import { Keypair, PublicKey, SystemProgram, SendTransactionError } from "@solana/web3.js";
 import { BN } from "@coral-xyz/anchor";
 import { getProgram, passportPda, workRecordPda, platformPda, counterPda } from "@/lib/anchorClient";
 import { TREASURY_PUBKEY, LAMPORTS_PER_SOL_NUM, RPC_URL } from "@/lib/constants";
@@ -98,7 +98,7 @@ export default function DemoPanel({ onGigComplete }: DemoPanelProps) {
       // Generate a unique record ID from timestamp + random bytes
       const recordIdBuf = Buffer.alloc(32);
       const nowBytes = Buffer.alloc(8);
-      nowBytes.writeBigInt64LE(BigInt(Date.now()), 0);
+      new DataView(nowBytes.buffer).setBigInt64(0, BigInt(Date.now()), true);
       nowBytes.copy(recordIdBuf, 0);
       crypto.getRandomValues(recordIdBuf.subarray(8));
       const recordId = Array.from(recordIdBuf) as unknown as number[] & { length: 32 };
@@ -151,7 +151,17 @@ export default function DemoPanel({ onGigComplete }: DemoPanelProps) {
       setTxSig(sig);
       onGigComplete(sig);
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+      if (err instanceof SendTransactionError) {
+        const logs = await err.getLogs(connection);
+        const insufficientFunds = logs?.some((l) => l.includes("insufficient lamports"));
+        if (insufficientFunds) {
+          setError("Insufficient SOL balance to cover the transfer + rent. Please airdrop more SOL to your wallet.");
+        } else {
+          setError(`Transaction failed: ${err.message}\n\nLogs:\n${logs?.join("\n") ?? "(none)"}`);
+        }
+      } else {
+        setError(err instanceof Error ? err.message : String(err));
+      }
     } finally {
       setLoading(false);
     }

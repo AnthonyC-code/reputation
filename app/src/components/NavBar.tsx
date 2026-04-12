@@ -4,10 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useEffect, useState } from "react";
 
 export default function NavBar() {
   const pathname = usePathname();
   const { publicKey, connected } = useWallet();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const links = [
     { href: "/", label: "Home" },
@@ -23,7 +29,7 @@ export default function NavBar() {
       <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-6">
           <Link href="/" className="text-white font-bold text-sm tracking-tight">
-            ReputationPassport
+            Vouchit
           </Link>
           <div className="hidden sm:flex items-center gap-1">
             {links.map(({ href, label }) => {
@@ -44,7 +50,7 @@ export default function NavBar() {
             })}
           </div>
         </div>
-        <WalletMultiButton style={{ height: 36, fontSize: 13 }} />
+        {mounted && <WalletMultiButton style={{ height: 36, fontSize: 13 }} />}
       </div>
     </nav>
   );

@@ -5,7 +5,7 @@ import SolanaWalletProvider from "@/src/components/WalletProvider";
 import NavBar from "@/src/components/NavBar";
 
 export const metadata: Metadata = {
-  title: "Reputation Passport",
+  title: "Vouchit",
   description: "On-chain gig worker reputation protocol",
 };
 

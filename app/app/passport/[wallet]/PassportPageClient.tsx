@@ -40,7 +40,7 @@ export default function PassportPageClient({ wallet }: PassportPageClientProps) 
   const isMe = wallet === "me";
   const walletAddress = isMe ? (publicKey?.toBase58() ?? null) : wallet;
 
-  const { passport } = usePassport(walletAddress);
+  const { passport, loading: passportLoading, error: passportError } = usePassport(walletAddress);
   const { records, loading: recordsLoading } = useWorkRecords(walletAddress);
 
   const badges = deriveBadges(passport);
@@ -91,7 +91,12 @@ export default function PassportPageClient({ wallet }: PassportPageClientProps) 
           </div>
         </div>
 
-        <PassportCard passport={passport} walletAddress={walletAddress} />
+        <PassportCard
+          passport={passport}
+          walletAddress={walletAddress}
+          loading={passportLoading}
+          notFound={!passportLoading && !!passportError && !passport}
+        />
 
         <section>
           <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">

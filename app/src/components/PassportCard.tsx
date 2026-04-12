@@ -7,6 +7,8 @@ import { LAMPORTS_PER_SOL_NUM } from "@/lib/constants";
 interface PassportCardProps {
   passport: PassportData | null;
   walletAddress: string;
+  loading?: boolean;
+  notFound?: boolean;
 }
 
 const CIRCUMFERENCE = 2 * Math.PI * 40; // ~251.327
@@ -31,7 +33,7 @@ function formatDate(timestamp: bigint): string {
   });
 }
 
-export default function PassportCard({ passport, walletAddress }: PassportCardProps) {
+export default function PassportCard({ passport, walletAddress, loading, notFound }: PassportCardProps) {
   const [copied, setCopied] = useState(false);
 
   async function handleCopy() {
@@ -40,7 +42,7 @@ export default function PassportCard({ passport, walletAddress }: PassportCardPr
     setTimeout(() => setCopied(false), 1500);
   }
 
-  if (!passport) {
+  if (loading) {
     return (
       <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 animate-pulse">
         <div className="flex items-center justify-between mb-6">
@@ -54,6 +56,33 @@ export default function PassportCard({ passport, walletAddress }: PassportCardPr
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="h-14 bg-gray-700 rounded-xl" />
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (notFound || !passport) {
+    return (
+      <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6">
+        <div className="flex items-center justify-between mb-6">
+          <span className="text-gray-400 text-sm font-mono">
+            {truncateAddress(walletAddress)}
+          </span>
+          <button
+            onClick={handleCopy}
+            className="text-xs px-2 py-1 rounded bg-gray-800 border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors"
+          >
+            {copied ? "Copied!" : "Copy"}
+          </button>
+        </div>
+        <div className="flex flex-col items-center justify-center py-10 gap-3">
+          <div className="w-16 h-16 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center">
+            <span className="text-2xl text-gray-600">?</span>
+          </div>
+          <p className="text-gray-400 text-sm font-medium">No passport found</p>
+          <p className="text-gray-600 text-xs text-center max-w-xs">
+            This wallet hasn&apos;t registered a reputation passport yet.
+          </p>
         </div>
       </div>
     );

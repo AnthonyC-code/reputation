@@ -70,8 +70,15 @@ export function usePassport(
   }, []);
 
   useEffect(() => {
-    if (useMock || !walletAddress) {
+    if (useMock) {
       setPassport(normalizeMockPassport());
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
+    if (!walletAddress) {
+      setPassport(null);
       setLoading(false);
       setError(null);
       return;
@@ -115,8 +122,7 @@ export function usePassport(
         setPassport(data);
       } catch (err) {
         if (cancelled) return;
-        // Fall back to mock data on any fetch failure
-        setPassport(normalizeMockPassport());
+        setPassport(null);
         setError(err instanceof Error ? err.message : "Failed to fetch passport");
       } finally {
         if (!cancelled) setLoading(false);

@@ -6,7 +6,6 @@ import DemoPanel from "@/src/components/DemoPanel";
 import PassportCard from "@/src/components/PassportCard";
 import LiveScoreUpdater from "@/src/components/LiveScoreUpdater";
 import { usePassport } from "@/src/hooks/usePassport";
-import { DEMO_WALLET } from "@/src/lib/constants";
 
 export default function DemoPage() {
   const { publicKey, connected } = useWallet();
@@ -14,12 +13,9 @@ export default function DemoPage() {
   const [prevScore, setPrevScore] = useState<number | null>(null);
   const [liveScore, setLiveScore] = useState<number | null>(null);
 
-  // Show connected wallet's passport; fall back to demo wallet
-  const activeWallet = connected && publicKey
-    ? publicKey.toBase58()
-    : DEMO_WALLET;
+  const walletAddress = connected && publicKey ? publicKey.toBase58() : null;
 
-  const { passport, refresh } = usePassport(activeWallet);
+  const { passport, loading: passportLoading, error: passportError, refresh } = usePassport(walletAddress);
 
   function handleGigComplete(txSig: string) {
     setLastTxSig(txSig);
@@ -39,7 +35,6 @@ export default function DemoPage() {
 
   return (
     <main className="min-h-screen bg-gray-950 text-white">
-      {/* Header */}
       <header className="border-b border-gray-800 px-6 py-5">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-2xl font-bold text-white mb-1">
@@ -52,18 +47,60 @@ export default function DemoPage() {
       </header>
 
       <div className="max-w-5xl mx-auto px-6 py-8">
-        {/* Split layout */}
+        {/* How it works */}
+        <div className="mb-8 bg-gray-900 border border-gray-700 rounded-2xl p-5">
+          <h2 className="text-sm font-semibold text-white mb-4">How to run this demo</h2>
+          <ol className="space-y-3">
+            {[
+              {
+                step: "1",
+                title: "Get a Devnet wallet",
+                desc: "Install Phantom or Backpack, create a wallet, and switch the network to Devnet.",
+              },
+              {
+                step: "2",
+                title: "Fund with Devnet SOL",
+                desc: "Open the Phantom wallet, go to Settings → Developer Settings → Airdrop SOL, or use the Solana faucet at faucet.solana.com.",
+              },
+              {
+                step: "3",
+                title: "Connect your wallet",
+                desc: 'Click the "Select Wallet" button in the nav bar and approve the connection.',
+              },
+              {
+                step: "4",
+                title: "Submit a gig",
+                desc: 'Choose a platform, category, amount, and rating, then click "Complete Gig". The first submission auto-creates your passport on-chain.',
+              },
+              {
+                step: "5",
+                title: "Watch your score update",
+                desc: "After the transaction confirms, your reputation score and passport stats update in real time.",
+              },
+            ].map(({ step, title, desc }) => (
+              <li key={step} className="flex gap-3">
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 text-xs font-bold flex items-center justify-center">
+                  {step}
+                </span>
+                <div>
+                  <span className="text-sm font-medium text-white">{title} </span>
+                  <span className="text-sm text-gray-400">{desc}</span>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           {/* Left: Gig form */}
           <div className="max-w-sm w-full">
             <DemoPanel onGigComplete={handleGigComplete} />
 
-            {/* Live score updater appears after a gig is completed */}
-            {lastTxSig && prevScore !== null && (
+            {lastTxSig && prevScore !== null && walletAddress && (
               <div className="mt-4 bg-gray-900 border border-gray-700 rounded-xl px-4 py-3">
                 <LiveScoreUpdater
                   key={lastTxSig}
-                  walletAddress={activeWallet}
+                  walletAddress={walletAddress}
                   prevScore={prevScore}
                   onUpdate={handleScoreUpdate}
                 />
@@ -74,9 +111,22 @@ export default function DemoPage() {
           {/* Right: Live passport card */}
           <div>
             <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-3">
-              {connected ? "Your Passport" : "Demo Wallet Passport"}
+              Your Passport
             </p>
-            <PassportCard passport={displayPassport} walletAddress={activeWallet} />
+            {walletAddress ? (
+              <PassportCard
+                passport={displayPassport}
+                walletAddress={walletAddress}
+                loading={passportLoading}
+                notFound={!passportLoading && !!passportError && !displayPassport}
+              />
+            ) : (
+              <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 flex items-center justify-center min-h-[200px]">
+                <p className="text-gray-500 text-sm text-center">
+                  Connect your wallet to see your passport
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

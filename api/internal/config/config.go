@@ -23,7 +23,7 @@ func Load() (Config, error) {
 	cfg := Config{
 		Env:         getenv("APP_ENV", "dev"),
 		APIAddr:     getenv("API_ADDR", ":8080"),
-		DatabaseURL: getenv("DATABASE_URL", "postgres://passport:passport@localhost:5432/passport?sslmode=disable"),
+		DatabaseURL: getenv("DATABASE_URL", "postgres://passport:passport@localhost:5433/passport?sslmode=disable"),
 	}
 	switch cfg.Env {
 	case "dev", "test", "prod":

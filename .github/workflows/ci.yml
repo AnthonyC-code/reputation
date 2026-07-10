@@ -28,8 +28,8 @@ jobs:
       DATABASE_URL: postgres://passport:passport@localhost:5432/passport?sslmode=disable
       APP_ENV: test
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
         with:
           go-version-file: api/go.mod
           cache-dependency-path: api/go.sum
@@ -54,11 +54,11 @@ jobs:
       run:
         working-directory: web
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
         with:
           package_json_file: web/package.json
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: pnpm

@@ -6,7 +6,9 @@ services:
       POSTGRES_PASSWORD: passport
       POSTGRES_DB: passport
     ports:
-      - "5432:5432"
+      # Host 5433: a native Postgres commonly occupies 5432 (it does on the
+      # founder's machine). DATABASE_URL in .env.example matches.
+      - "5433:5432"
     volumes:
       - dbdata:/var/lib/postgresql/data
     healthcheck:

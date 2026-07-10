@@ -1,7 +1,10 @@
 # Roadmap
 
-> **Current phase: 0 — Reset + scaffolding + CI (in progress)**
-> DoD: fresh clone → `make up && make dev` runs API + web; CI green on main.
+> **Current phase: 1 — Schema + auth + sellers**
+> DoD: signup → session → `GET /api/seller` round-trip covered by tests.
+> (Phase 0 code is done and CI is green; two founder to-dos remain from
+> Phase 0: enable Docker Desktop WSL integration, and register the Shopify
+> Partner account + protected-customer-data application.)
 
 Agents: check the current phase above before starting work; update it (and
 tick checklists) when you complete items. Decisions that must not be

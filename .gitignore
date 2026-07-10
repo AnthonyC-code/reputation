@@ -1,0 +1,21 @@
+# local env
+.env
+.env.local
+.env*.local
+
+# go
+api/bin/
+*.test
+*.out
+
+# node / next
+node_modules/
+web/.next/
+web/out/
+web/next-env.d.ts
+*.tsbuildinfo
+
+# editors / os
+.DS_Store
+.idea/
+.vscode/

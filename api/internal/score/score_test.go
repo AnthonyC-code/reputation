@@ -108,7 +108,7 @@ func TestEstablishedSellerGolden(t *testing.T) {
 		t.Errorf("confidence = %v, want ≥0.8 for 4 years of history", r.Confidence)
 	}
 	approx(t, "recency raw", comp(t, r, "recency").Raw, 1.0, 0.01) // sold today
-	approx(t, "tenure raw", comp(t, r, "tenure").Raw, 0.8, 0.01)  // 4 of 5 years
+	approx(t, "tenure raw", comp(t, r, "tenure").Raw, 0.8, 0.01)   // 4 of 5 years
 	approx(t, "diversity raw", comp(t, r, "diversity").Raw, 2.0/3, 0.01)
 
 	// The weighted sum must equal the overall.
@@ -181,5 +181,36 @@ func TestEbayScaleNormalization(t *testing.T) {
 	}}
 	if a, b := comp(t, Compute(fiveStar), "rating").Raw, comp(t, Compute(ebayPos), "rating").Raw; a != b {
 		t.Errorf("5/5 stars (%v) and +1 ebay (%v) must normalize identically", a, b)
+	}
+}
+
+// Snapshots are embedded in signed JCS payloads; full-precision floats break
+// cross-language signature verification (Go vs JS shortest-round-trip
+// disagreement was observed live). Every serialized float must be rounded.
+func TestSerializedFloatsAreShort(t *testing.T) {
+	in := Input{Now: now, VerifiedConnections: 2}
+	for d := 1; d < 1420; d += 2 {
+		in.Events = append(in.Events, sale(d, TrustVerifiedAPI), review(5, d, TrustVerifiedAPI))
+	}
+	r := Compute(in)
+	checks := map[string]struct{ v, scale float64 }{
+		"overall":          {r.Overall, 100},
+		"confidence":       {r.Confidence, 1000},
+		"orders12mo":       {r.Inputs.Orders12moWeighted, 100},
+		"tenure_years":     {r.Inputs.TenureYears, 10000},
+		"effective_events": {r.Inputs.EffectiveEvents, 100},
+	}
+	for name, c := range checks {
+		scaled := c.v * c.scale
+		if math.Abs(scaled-math.Round(scaled)) > 1e-9 {
+			t.Errorf("%s = %v is not rounded (scale %v)", name, c.v, c.scale)
+		}
+	}
+	for _, comp := range r.Components {
+		for name, v := range map[string]float64{"raw": comp.Raw * 10000, "weighted": comp.Weighted * 100} {
+			if math.Abs(v-math.Round(v)) > 1e-9 {
+				t.Errorf("component %s %s not rounded", comp.Key, name)
+			}
+		}
 	}
 }

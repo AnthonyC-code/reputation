@@ -4,15 +4,7 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-neutral-200 px-6 py-8 text-sm text-neutral-500 dark:border-neutral-800">
       <div className="mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-4">
-        <p>
-          Built by Anthony Chen ·{" "}
-          <a
-            href="mailto:anthonychenjiaqi@gmail.com"
-            className="underline hover:text-neutral-700 dark:hover:text-neutral-300"
-          >
-            anthonychenjiaqi@gmail.com
-          </a>
-        </p>
+        <p>© Reputation Passport</p>
         <nav className="flex gap-4">
           <Link
             href="/p/demo"
@@ -26,6 +18,12 @@ export function SiteFooter() {
           >
             Privacy
           </Link>
+          <a
+            href="mailto:anthonychenjiaqi@gmail.com"
+            className="hover:text-neutral-700 dark:hover:text-neutral-300"
+          >
+            Contact
+          </a>
         </nav>
       </div>
     </footer>

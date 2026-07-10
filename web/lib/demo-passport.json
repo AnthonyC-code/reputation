@@ -7,7 +7,8 @@
     "slug": "demo",
     "location": "Austin, TX",
     "member_since": "August 2022",
-    "tagline": "Hand-poured soy candles, shipped nationwide"
+    "tagline": "Hand-poured soy candles, shipped nationwide",
+    "website": "https://example.com/wildflower-candle-co"
   },
   "score": {
     "score_version": "v1.0",
@@ -58,8 +59,8 @@
       "defects_24mo": 4,
       "reviews_total": 473,
       "days_since_last_sale": 1,
-      "tenure_years": 3.8904109589041096,
-      "effective_events": 901.6674881844987,
+      "tenure_years": 3.8904,
+      "effective_events": 901.67,
       "all_self_reported": false
     }
   },
@@ -84,5 +85,78 @@
       "count": 473,
       "detail": "Review history imported via the official Judge.me API"
     }
-  ]
+  ],
+  "attestation": {
+    "kid": "demo-ephemeral",
+    "payload": {
+      "as_of": "2026-07-01",
+      "passport_slug": "demo",
+      "score": {
+        "components": [
+          {
+            "key": "rating",
+            "raw": 0.9391,
+            "weight": 40,
+            "weighted": 37.56
+          },
+          {
+            "key": "defect",
+            "raw": 0.9906,
+            "weight": 25,
+            "weighted": 24.77
+          },
+          {
+            "key": "volume",
+            "raw": 0.9128,
+            "weight": 15,
+            "weighted": 13.69
+          },
+          {
+            "key": "recency",
+            "raw": 0.9923,
+            "weight": 10,
+            "weighted": 9.92
+          },
+          {
+            "key": "diversity",
+            "raw": 0.6667,
+            "weight": 5,
+            "weighted": 3.33
+          },
+          {
+            "key": "tenure",
+            "raw": 0.7781,
+            "weight": 5,
+            "weighted": 3.89
+          }
+        ],
+        "confidence": 0.947,
+        "grade": "A+",
+        "inputs": {
+          "all_self_reported": false,
+          "days_since_last_sale": 1,
+          "defects_24mo": 4,
+          "effective_events": 901.67,
+          "orders_12mo_weighted": 547,
+          "reviews_total": 473,
+          "tenure_years": 3.8904,
+          "verified_orders_24mo": 1095
+        },
+        "overall": 93.16,
+        "score_version": "v1.0"
+      },
+      "type": "score.snapshot",
+      "version": 1
+    },
+    "signature_b64": "lQgDxlX+DgowiUthy/vMZkyieC7lkbFHC1oEbKTkTX/sR1/kx50hZQkvaYFFIAmNThmglsjk9RVDHkOe5rJPCg==",
+    "public_key_jwk": {
+      "kty": "OKP",
+      "crv": "Ed25519",
+      "x": "ht1vuso8lHyVsLBqgqHuW1f4pWWTrpVz68nZCjY-z4E",
+      "kid": "demo-ephemeral",
+      "alg": "EdDSA",
+      "use": "sig"
+    },
+    "note": "Demo key generated at build time and discarded. Live passports are signed with the production key published at /.well-known/jwks.json."
+  }
 }

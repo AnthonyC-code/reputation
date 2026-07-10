@@ -8,12 +8,16 @@
 package main
 
 import (
+	"crypto/ed25519"
+	"crypto/rand"
+	"encoding/base64"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
 	"time"
 
+	"github.com/AnthonyC-code/reputation/api/internal/attest"
 	"github.com/AnthonyC-code/reputation/api/internal/score"
 )
 
@@ -39,6 +43,7 @@ type demoPassport struct {
 		Location    string `json:"location"`
 		MemberSince string `json:"member_since"`
 		Tagline     string `json:"tagline"`
+		Website     string `json:"website"`
 	} `json:"seller"`
 
 	Score score.Result `json:"score"`
@@ -51,6 +56,17 @@ type demoPassport struct {
 	} `json:"stats"`
 
 	Sources []source `json:"sources"`
+
+	// A genuinely verifiable signature over the score payload, produced by
+	// internal/attest with an ephemeral demo key (generated at build time,
+	// never persisted — real passports use the production signing key).
+	Attestation struct {
+		KID       string          `json:"kid"`
+		Payload   json.RawMessage `json:"payload"` // JCS canonical form
+		Signature string          `json:"signature_b64"`
+		PublicKey attest.JWK      `json:"public_key_jwk"`
+		Note      string          `json:"note"`
+	} `json:"attestation"`
 }
 
 func main() {
@@ -106,6 +122,7 @@ func main() {
 	p.Seller.Location = "Austin, TX"
 	p.Seller.MemberSince = refNow.AddDate(0, 0, -1420).Format("January 2006")
 	p.Seller.Tagline = "Hand-poured soy candles, shipped nationwide"
+	p.Seller.Website = "https://example.com/wildflower-candle-co"
 	p.Score = score.Compute(in)
 	p.Stats.Orders = orders
 	p.Stats.Reviews = reviews
@@ -118,6 +135,11 @@ func main() {
 			Detail: "Review history imported via the official Judge.me API"},
 	}
 
+	if err := signDemo(&p); err != nil {
+		fmt.Fprintln(os.Stderr, "signing demo attestation:", err)
+		os.Exit(1)
+	}
+
 	buf, err := json.MarshalIndent(p, "", "  ")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "marshal:", err)
@@ -128,4 +150,32 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Printf("wrote %s — score %.2f (%s), confidence %.3f\n", *out, p.Score.Overall, p.Score.Grade, p.Score.Confidence)
+}
+
+func signDemo(p *demoPassport) error {
+	pub, priv, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		return err
+	}
+	const kid = "demo-ephemeral"
+	signer, err := attest.NewSigner(priv, kid)
+	if err != nil {
+		return err
+	}
+	att, err := signer.Sign(map[string]any{
+		"type":          "score.snapshot",
+		"version":       1,
+		"passport_slug": p.Seller.Slug,
+		"as_of":         p.AsOf,
+		"score":         p.Score,
+	})
+	if err != nil {
+		return err
+	}
+	p.Attestation.KID = kid
+	p.Attestation.Payload = att.Payload
+	p.Attestation.Signature = base64.StdEncoding.EncodeToString(att.Signature)
+	p.Attestation.PublicKey = attest.PublicKeyJWK(pub, kid)
+	p.Attestation.Note = "Demo key generated at build time and discarded. Live passports are signed with the production key published at /.well-known/jwks.json."
+	return nil
 }

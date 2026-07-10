@@ -20,6 +20,7 @@ export interface PassportData {
     location: string;
     member_since: string;
     tagline: string;
+    website: string;
   };
   score: {
     score_version: string;
@@ -41,6 +42,20 @@ export interface PassportData {
     count: number;
     detail: string;
   }[];
+  attestation: {
+    kid: string;
+    payload: Record<string, unknown>;
+    signature_b64: string;
+    public_key_jwk: {
+      kty: string;
+      crv: string;
+      x: string;
+      kid: string;
+      alg: string;
+      use: string;
+    };
+    note: string;
+  };
 }
 
 export const demoPassport = demoJson as PassportData;

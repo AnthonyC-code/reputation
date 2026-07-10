@@ -192,6 +192,13 @@ func summarize(in Input) Summary {
 	if !first.IsZero() {
 		s.TenureYears = in.Now.Sub(first).Hours() / 24 / 365
 	}
+	// Snapshots end up inside signed (JCS-canonicalized) attestation
+	// payloads. Full-precision floats round-trip differently across JSON
+	// implementations and break signature verification — keep every
+	// serialized float short.
+	s.Orders12moWeighted = round2(s.Orders12moWeighted)
+	s.TenureYears = round4(s.TenureYears)
+	s.EffectiveEvents = round2(s.EffectiveEvents)
 	return s
 }
 

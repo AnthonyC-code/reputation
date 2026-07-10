@@ -12,7 +12,7 @@ const platforms = [
 
 export default function Home() {
   return (
-    <main className="flex flex-1 flex-col items-center px-6">
+    <main id="main" className="flex flex-1 flex-col items-center px-6">
       {/* Hero */}
       <section className="flex flex-col items-center gap-6 pb-16 pt-24 text-center">
         <span className="rounded-full border border-emerald-600/30 bg-emerald-600/10 px-3 py-1 text-sm text-emerald-700 dark:text-emerald-400">
@@ -33,7 +33,7 @@ export default function Home() {
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/p/demo"
-            className="rounded-lg bg-emerald-600 px-5 py-2.5 font-medium text-white hover:bg-emerald-700"
+            className="rounded-lg bg-emerald-700 px-5 py-2.5 font-medium text-white hover:bg-emerald-800"
           >
             See a sample passport →
           </Link>
@@ -48,7 +48,7 @@ export default function Home() {
 
       {/* Works with */}
       <section className="w-full max-w-3xl border-t border-neutral-200 py-10 text-center dark:border-neutral-800">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
+        <h2 className="text-sm font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           Works with
         </h2>
         <ul className="mt-4 flex flex-wrap items-center justify-center gap-3">
@@ -61,8 +61,8 @@ export default function Home() {
               <span
                 className={
                   p.status === "at launch"
-                    ? "text-emerald-600 dark:text-emerald-400"
-                    : "text-neutral-500"
+                    ? "text-emerald-700 dark:text-emerald-400"
+                    : "text-neutral-500 dark:text-neutral-400"
                 }
               >
                 · {p.status}
@@ -78,9 +78,9 @@ export default function Home() {
           Useful on day one — no marketplace adoption required
         </h2>
         <p className="mt-2 text-neutral-600 dark:text-neutral-400">
-          From the moment you connect a store, you get a public passport page
-          and a trust badge for your own site, your email signature, and your
-          wholesale or marketplace applications. As platforms join, they query
+          Connect a store and you get a passport page — published only when
+          you choose — and a trust badge for your own site, your email
+          signature, and your wholesale or marketplace applications. As platforms join, they query
           your passport automatically — but the value doesn&apos;t wait for
           them.
         </p>
@@ -92,7 +92,7 @@ export default function Home() {
             },
             {
               title: "Verify",
-              body: "Your numbers come straight from the platform's API — not self-reported, not editable by anyone, including us. Anyone can check a passport is genuine, free.",
+              body: "Your numbers come straight from the platform's API — not self-reported, and cryptographically signed, so any alteration after import is detectable by anyone, free.",
             },
             {
               title: "Carry",
@@ -125,7 +125,7 @@ export default function Home() {
             "Disconnect anytime. Your imported data is deleted, and your passport with it if you choose.",
           ].map((line) => (
             <li key={line} className="flex gap-3">
-              <span aria-hidden className="text-emerald-600">
+              <span aria-hidden className="text-emerald-700 dark:text-emerald-400">
                 ✓
               </span>
               {line}
@@ -149,11 +149,11 @@ export default function Home() {
         </p>
         <a
           href={`mailto:${CONTACT}?subject=Reputation%20Passport%20early%20access&body=Hi%2C%20I%27d%20like%20to%20join%20the%20early%20access%20list.%0A%0AMy%20store%3A%20`}
-          className="mt-5 inline-block rounded-lg bg-emerald-600 px-5 py-2.5 font-medium text-white hover:bg-emerald-700"
+          className="mt-5 inline-block rounded-lg bg-emerald-700 px-5 py-2.5 font-medium text-white hover:bg-emerald-800"
         >
           Email us to join the list
         </a>
-        <p className="mt-3 text-xs text-neutral-500">
+        <p className="mt-3 text-xs text-neutral-500 dark:text-neutral-400">
           One email, no newsletter. We reply personally.
         </p>
         <p className="mt-6 text-sm text-neutral-600 dark:text-neutral-400">

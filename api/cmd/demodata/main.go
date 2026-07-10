@@ -183,12 +183,17 @@ func signDemo(p *demoPassport) error {
 	if err != nil {
 		return err
 	}
+	// The payload covers everything the passport page and badge assert:
+	// score, headline stats, and the source list — not just the score.
 	att, err := signer.Sign(map[string]any{
 		"type":          "score.snapshot",
 		"version":       1,
 		"passport_slug": p.Seller.Slug,
+		"display_name":  p.Seller.Name,
 		"as_of":         p.AsOf,
 		"score":         p.Score,
+		"stats":         p.Stats,
+		"sources":       p.Sources,
 	})
 	if err != nil {
 		return err

@@ -28,6 +28,11 @@ export interface PassportData {
     grade: string;
     confidence: number;
     components: ScoreComponent[];
+    inputs: {
+      tenure_years: number;
+      effective_events: number;
+      orders_12mo_weighted: number;
+    };
   };
   stats: {
     orders: number;

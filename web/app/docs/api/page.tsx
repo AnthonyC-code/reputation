@@ -34,7 +34,9 @@ const lookupResponse = {
       kid: p.attestation.kid,
       payload: p.attestation.payload,
       signature_b64: p.attestation.signature_b64,
-      keys_url: `${SITE_URL}/.well-known/jwks.json`,
+      // Sample data is signed with the demo key; production responses point
+      // at the API origin's JWKS.
+      keys_url: `${SITE_URL}/.well-known/demo-jwks.json`,
     },
   },
   sample: true,
@@ -54,7 +56,7 @@ const codeBlock =
 
 export default function ApiDocsPage() {
   return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-14">
+    <main id="main" className="mx-auto w-full max-w-3xl flex-1 px-6 py-14">
       <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
         API preview
       </p>
@@ -92,11 +94,11 @@ Authorization: Bearer rp_test_5b02d8e1...   # sandbox — sample sellers only`}<
         <pre className={codeBlock}>{`GET /v1/passports/lookup?domain=wildflower-candle.example
 GET /v1/passports/lookup?email_sha256=b4c9a2...
 GET /v1/passports/lookup?platform=shopify&platform_seller_id=gid://shopify/Shop/1234`}</pre>
-        <h3 className="mt-5 text-sm font-medium uppercase tracking-wide text-neutral-500">
+        <h3 className="mt-5 text-sm font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           200 — match found
         </h3>
         <pre className={codeBlock}>{JSON.stringify(lookupResponse, null, 2)}</pre>
-        <h3 className="mt-5 text-sm font-medium uppercase tracking-wide text-neutral-500">
+        <h3 className="mt-5 text-sm font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           404 — no match (RFC 7807)
         </h3>
         <pre className={codeBlock}>{JSON.stringify(noMatchResponse, null, 2)}</pre>
@@ -106,18 +108,19 @@ GET /v1/passports/lookup?platform=shopify&platform_seller_id=gid://shopify/Shop/
         <h2 className="text-xl font-semibold">Reading the response</h2>
         <ul className="mt-3 space-y-2 text-sm text-neutral-700 dark:text-neutral-300">
           <li>
-            <strong>score.overall / grade</strong> — 0–100 and A+…D.
+            <strong>score.overall / grade</strong>{" "}— 0–100 and A+…D.
             Component breakdown included so your rules can weight what you
             care about.
           </li>
           <li>
-            <strong>score.confidence</strong> — 0–1, how much verified
-            evidence backs the score. Set your own threshold; we don&apos;t
-            blend it into the score.
+            <strong>score.confidence</strong>{" "}— 0–1, how much evidence backs
+            the score (verified events count fully, self-reported at half
+            weight). Set your own threshold; we don&apos;t blend it into the
+            score.
           </li>
           <li>
-            <strong>sources[].trust_level</strong> — provenance of every
-            input: <code>verified_api</code> (imported read-only from the
+            <strong>sources[].trust_level</strong>{" "}— provenance of every
+            input: <code>verified_api</code>{" "}(imported read-only from the
             platform&apos;s official API) or <code>csv_self_reported</code>{" "}
             (seller-supplied; discounted 50% and capped at grade B).{" "}
             <Link href="/docs/verification" className="underline">
@@ -125,13 +128,14 @@ GET /v1/passports/lookup?platform=shopify&platform_seller_id=gid://shopify/Shop/
             </Link>
           </li>
           <li>
-            <strong>attestation</strong> — Ed25519 signature over the score
-            payload. Verify offline against{" "}
-            <code>/.well-known/jwks.json</code>; cache responses and re-verify
-            without us, forever.
+            <strong>attestation</strong>{" "}— Ed25519 signature over the score,
+            stats, and sources. Verify offline against the key set at{" "}
+            <code>attestation.keys_url</code>{" "}(production: the API
+            origin&apos;s <code>/.well-known/jwks.json</code>); cache
+            responses and re-verify without us, forever.
           </li>
           <li>
-            <strong>score.score_version</strong> — the formula version. We
+            <strong>score.score_version</strong>{" "}— the formula version. We
             never silently change what a number means.
           </li>
         </ul>
@@ -143,11 +147,11 @@ GET /v1/passports/lookup?platform=shopify&platform_seller_id=gid://shopify/Shop/
 GET  /v1/passports/{id}/score            # score + inline attestation only
 GET  /v1/passports/{id}/attestations     # attestation history
 POST /v1/verify                          # server-side verification + revocation check
-GET  /.well-known/jwks.json              # verification keys (no auth)`}</pre>
+GET  /.well-known/jwks.json              # verification keys, on the API origin (no auth)`}</pre>
         <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
           Rate limits are per-key with standard headers (
           <code>RateLimit-Limit</code>, <code>RateLimit-Remaining</code>,{" "}
-          <code>Retry-After</code> on 429). Breaking changes never happen
+          <code>Retry-After</code>{" "}on 429). Breaking changes never happen
           inside /v1.
         </p>
       </section>
@@ -161,7 +165,7 @@ GET  /.well-known/jwks.json              # verification keys (no auth)`}</pre>
         </div>
         <Link
           href="/platforms"
-          className="rounded-lg bg-emerald-600 px-5 py-2.5 font-medium text-white hover:bg-emerald-700"
+          className="rounded-lg bg-emerald-700 px-5 py-2.5 font-medium text-white hover:bg-emerald-800"
         >
           For marketplaces →
         </Link>

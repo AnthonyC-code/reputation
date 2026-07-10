@@ -11,7 +11,7 @@ const CONTACT = "anthonychenjiaqi@gmail.com";
 
 export default function PlatformsPage() {
   return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-14">
+    <main id="main" className="mx-auto w-full max-w-3xl flex-1 px-6 py-14">
       <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
         For marketplaces &amp; platforms
       </p>
@@ -71,11 +71,14 @@ export default function PlatformsPage() {
           The architecture makes continuity a feature, not a promise. Every
           passport response is signed; signatures verify offline, forever,
           against keys published at{" "}
-          <code className="text-sm">/.well-known/jwks.json</code>. You can
-          cache every response you&apos;ve paid for and re-verify it without
-          us. Sellers can export their signed history. We also recommend
-          integrating async and advisory — enrich your review queue rather
-          than blocking your onboarding path on any third party, including us.
+          <code className="text-sm">
+            api.reputationpassport.dev/.well-known/jwks.json
+          </code>
+          . You can cache every response you&apos;ve paid for and re-verify it
+          without us, and sellers will be able to export their signed history.
+          We also recommend integrating async and advisory — enrich your
+          review queue rather than blocking your onboarding path on any third
+          party, including us.
         </p>
       </section>
 
@@ -101,7 +104,7 @@ export default function PlatformsPage() {
         </div>
         <a
           href={`mailto:${CONTACT}?subject=Reputation%20Passport%20design%20partner%20(platform)&body=Hi%2C%20I%20lead%20trust%2Fonboarding%20at%3A%20%0AMonthly%20seller%20applications%20(roughly)%3A%20%0AWhat%20we%20use%20today%3A%20`}
-          className="rounded-lg bg-emerald-600 px-5 py-2.5 font-medium text-white hover:bg-emerald-700"
+          className="rounded-lg bg-emerald-700 px-5 py-2.5 font-medium text-white hover:bg-emerald-800"
         >
           Start the conversation
         </a>

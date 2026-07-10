@@ -7,11 +7,14 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-14">
+    <main id="main" className="mx-auto w-full max-w-2xl flex-1 px-6 py-14">
       <h1 className="text-3xl font-semibold tracking-tight">Privacy</h1>
-      <p className="mt-2 text-sm text-neutral-500">
+      <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
         Plain-English version, ahead of the full policy that ships with the
-        product launch. These are commitments, not marketing.
+        product launch. The service is pre-launch: these are the commitments
+        we are building to, stated in the tense they deserve — as promises
+        about the launched product, not descriptions of code that already
+        runs.
       </p>
 
       <div className="mt-8 space-y-6 text-neutral-700 dark:text-neutral-300">
@@ -46,8 +49,10 @@ export default function PrivacyPage() {
           <p className="mt-1 text-sm">
             Disconnect a storefront anytime and its imported data is deleted.
             Delete your account and your passport, history, and connections go
-            with it. Deletion is a supported, tested code path — not a support
-            ticket.
+            with it. Deletion will be a supported, tested code path from the
+            first day sellers can sign up — not a support ticket. We&apos;re
+            building it before launch because retrofitting deletion is how
+            companies end up unable to honor it.
           </p>
         </section>
         <section>

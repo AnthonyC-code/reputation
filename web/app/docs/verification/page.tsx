@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function VerificationDocsPage() {
   return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-14">
+    <main id="main" className="mx-auto w-full max-w-3xl flex-1 px-6 py-14">
       <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
         Trust model
       </p>
@@ -19,8 +19,19 @@ export default function VerificationDocsPage() {
       <p className="mt-3 text-lg text-neutral-600 dark:text-neutral-400">
         Written for the skeptical reader. If your job is adversarial thinking,
         this page is for you — including the section on what our signatures{" "}
-        <em>don&apos;t</em> prove.
+        <em>don&apos;t</em>{" "}prove.
       </p>
+      <div className="mt-4 rounded-lg border border-neutral-300 bg-neutral-100 px-4 py-3 text-sm text-neutral-700 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300">
+        <strong>Status:</strong>{" "}the service is pre-launch. This page is the
+        committed design; the scoring engine and signature scheme are
+        implemented and demonstrated on the{" "}
+        <Link href="/p/demo" className="underline">
+          sample passport
+        </Link>
+        , while the import pipeline, revocation, and the transparency log are
+        in development. We mark below what runs today vs. what ships with
+        launch.
+      </div>
 
       <section className="mt-10">
         <h2 className="text-xl font-semibold">Chain of custody</h2>
@@ -30,7 +41,7 @@ export default function VerificationDocsPage() {
             ["Store raw", "Every API response is stored verbatim (buyer-identifying data stripped first). Raw documents are the source of truth: every downstream number can be re-derived from them, and re-importing is idempotent."],
             ["Normalize", "Raw documents become typed events — sale, review, dispute, refund, cancellation — each carrying its provenance label and the original rating scale."],
             ["Score", "A versioned, published formula computes the score. Small samples are statistically discounted (Bayesian prior on ratings, Wilson lower bound on dispute rates) so five perfect reviews can never impersonate five thousand."],
-            ["Sign", "The score, its full component breakdown, and its input summary are canonicalized (RFC 8785) and signed with Ed25519. Signed entries chain by hash, append-only — altering history breaks every later link."],
+            ["Sign", "The score, its full component breakdown, input summary, headline stats, and source list are canonicalized (RFC 8785) and signed with Ed25519 — implemented today, demonstrated on the sample passport. At launch, signed entries land in an append-only hash-chained log so altering history breaks every later link; a public transparency log (published chain heads) follows, which is what lets outsiders catch even us rewriting history."],
           ].map(([title, body], i) => (
             <li key={title} className="flex gap-3">
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600/10 text-sm font-medium text-emerald-700 dark:text-emerald-400">
@@ -82,35 +93,43 @@ export default function VerificationDocsPage() {
         </h2>
         <ul className="mt-3 space-y-2 text-neutral-700 dark:text-neutral-300">
           <li>
-            <strong>Storefront ownership:</strong> connecting a store requires
+            <strong>Storefront ownership:</strong>{" "}connecting a store requires
             OAuth authorization only a store admin can grant. One storefront
-            can back exactly one passport — enforced as a hard uniqueness
-            rule, not a policy.
+            can back exactly one passport — a database uniqueness constraint
+            in the launch schema, not a policy.
           </li>
           <li>
-            <strong>Domain claims:</strong> claiming a website for API lookup
+            <strong>Domain claims:</strong>{" "}claiming a website for API lookup
             requires a DNS TXT challenge, or the domain must match the
             connected storefront&apos;s primary domain. Unverified identifiers
             are never matchable.
           </li>
           <li>
-            <strong>Plausibility checks:</strong> shop age, review-to-order
-            ratios, and buyer-concentration signals are captured at import;
-            anomalies flag the passport for manual review before publication.
+            <strong>Plausibility checks:</strong>{" "}shop age, review-to-order
+            ratios, and buyer-concentration signals ship with the importer;
+            anomalies flag a passport for manual review before publication.
           </li>
         </ul>
       </section>
 
       <section className="mt-10 rounded-xl border border-amber-500/40 bg-amber-500/5 p-5">
         <h2 className="text-xl font-semibold">
-          What the signature does <em>not</em> prove
+          What the signature does <em>not</em>{" "}prove
         </h2>
         <ul className="mt-3 space-y-2 text-sm text-neutral-700 dark:text-neutral-300">
           <li>
             It does not prove Shopify&apos;s (or any platform&apos;s) data is
-            true — it proves <em>we</em> retrieved that data from the
-            platform&apos;s API at a stated time and that nobody, including
-            us, altered it afterward.
+            true — it proves <em>we</em>{" "}retrieved that data from the
+            platform&apos;s API at a stated time and that nothing changed
+            after we signed it.
+          </li>
+          <li>
+            It does not prove <em>we</em>{" "}are honest. The signing key is ours,
+            so a signature can&apos;t rule out the operator altering data
+            before signing. That&apos;s the transparency log&apos;s job:
+            published chain heads will let outsiders detect rewritten history.
+            Until it ships, treat &quot;tamper-evident&quot; as covering
+            everyone downstream of us — and hold us to shipping the log.
           </li>
           <li>
             It does not prove the person who sent you a passport link owns
@@ -126,10 +145,11 @@ export default function VerificationDocsPage() {
           </li>
         </ul>
         <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
-          If a passport is later found fraudulent, its attestations are
-          revoked — offline verification still validates the signature, so
-          high-stakes consumers should also call{" "}
-          <code>POST /v1/verify</code>, which checks revocation.
+          The launch API includes revocation: if a passport is found
+          fraudulent, its attestations are marked revoked. Offline
+          verification still validates the signature, so high-stakes consumers
+          should also call <code>POST /v1/verify</code>, which checks
+          revocation status.
         </p>
       </section>
 
@@ -142,8 +162,8 @@ export default function VerificationDocsPage() {
           </Link>{" "}
           ships with a real signature. Download its attestation, run the
           30-second verify script (keys are fetched from our published key
-          set, pinned by key id — never trusted from the file itself), then
-          change one digit of the score and watch it fail.
+          set and pinned by key id), then change one digit of the score and
+          watch it fail.
         </p>
       </section>
     </main>

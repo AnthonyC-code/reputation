@@ -53,12 +53,12 @@ export function ScoreRing({
           x="70"
           y="90"
           textAnchor="middle"
-          className="fill-emerald-600 text-base font-medium dark:fill-emerald-400"
+          className="fill-emerald-700 text-base font-medium dark:fill-emerald-400"
         >
           {grade}
         </text>
       </svg>
-      <span className="mt-1 text-xs text-neutral-500">
+      <span className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
         {(confidence * 100).toFixed(0)}% evidence confidence
       </span>
     </div>

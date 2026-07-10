@@ -125,3 +125,51 @@ when ATTEST_SIGNING_KEY is configured, 404 otherwise; tested).
 
 **Stale finding (no action):** the critic caught the working tree mid-edit
 and reported a compile break; the tree tested green at commit time.
+
+## Cycle 4 — Hostile trust & safety auditor (overclaim hunt + a11y)
+
+**Verdict:** "clear for a pilot conversation only with the marketing copy
+corrected first — the engineering that exists is honest and better than
+average, but the site makes present-tense claims about a product whose
+backend is a /healthz endpoint."
+
+**Criticisms (ranked) → disposition:**
+
+1. CRITICAL — "not editable by anyone, including us" is cryptographically
+   unprovable with an operator-held key and contradicted by ADR-0001; the
+   advertised hash chain isn't wired up → **accepted**: landing copy
+   reworded ("any alteration after import is detectable"); /docs/verification
+   now carries a pre-launch status banner, tense-corrected chain-of-custody,
+   and a new "It does not prove *we* are honest" bullet naming the
+   transparency log as the mechanism that will bind the operator.
+2. Present-tense claims about nonexistent machinery (worst: privacy page's
+   "deletion is a supported, tested code path") → **accepted**: status
+   framing on /docs/verification and /privacy; deletion/export/revocation/
+   plausibility claims moved to future-commitment tense.
+3. "Signature over every input" overclaim → **accepted by strengthening**:
+   the demo payload now signs display name, headline stats, and source list
+   too; copy says exactly what's covered.
+4. Confidence described as "verified evidence" while self-reports count at
+   half weight → **accepted**: copy states the actual rule.
+5. Key-independence ceremony oversold; "signed by Reputation Passport" for
+   an ephemeral key → **accepted**: copy + script output reworded.
+6. Advertised production keys_url 404s; JWKS host inconsistent across
+   pages/spec → **accepted**: sample keys_url points at the demo JWKS;
+   canonical production JWKS host = API origin everywhere.
+7. Published verifier wasn't RFC 8785 — false INVALID on re-serialized
+   copies → **accepted**: script now canonicalizes (sorted-key stringify);
+   tested against reordered and tampered files scraped from the rendered
+   page, exactly as a stranger would.
+8. Landing/privacy publish contradiction; "Years of history: 2022" tile; OG
+   metadata missing the sample label → **accepted**, all fixed.
+9. A11y: emerald-600 CTAs fail WCAG AA (3.77:1), neutral-500 captions fail
+   in dark mode, unlabeled navs, no skip link, silent CopyButton →
+   **accepted**: emerald-700 buttons/text, dark:text-neutral-400 sweep,
+   aria-labels, skip-to-content link, aria-live on copy, unused Geist font
+   config fixed (fonts were loaded but body used Arial).
+10. JSX whitespace run-ons in built HTML ("claims:claiming") → **accepted**:
+    explicit {" "} after inline close-tags; verified in rendered output.
+
+**Credit from the auditor worth keeping:** every number on the site checks
+out against the engine; the demo is genuinely engine-generated; heading
+hierarchy and pre-block overflow were already clean.

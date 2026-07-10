@@ -90,6 +90,7 @@
     "kid": "demo-ephemeral",
     "payload": {
       "as_of": "2026-07-01",
+      "display_name": "Wildflower Candle Co.",
       "passport_slug": "demo",
       "score": {
         "components": [
@@ -145,14 +146,36 @@
         "overall": 93.16,
         "score_version": "v1.0"
       },
+      "sources": [
+        {
+          "count": 2130,
+          "detail": "Imported read-only via the official Shopify Admin API",
+          "kind": "Orders \u0026 disputes",
+          "platform": "Shopify",
+          "status": "verified_api"
+        },
+        {
+          "count": 473,
+          "detail": "Review history imported via the official Judge.me API",
+          "kind": "Product reviews",
+          "platform": "Judge.me",
+          "status": "verified_api"
+        }
+      ],
+      "stats": {
+        "avg_rating": 4.9,
+        "disputes": 6,
+        "orders": 2130,
+        "reviews": 473
+      },
       "type": "score.snapshot",
       "version": 1
     },
-    "signature_b64": "w5HCYDODtaVwkweh7FB/Rgi2BN0iyL77BZd9ePiJAejcoXqYxRcLFCrDHnTIJhaY3IHuaHI0sOhQY9V/AEn3AA==",
+    "signature_b64": "iCQjGbyBheOh15EY0xPYQfqdGbKEhLEFPtCQl+j6ALqd3A1CIjWZxGtYvcOwa2ZVJRE32Rnxe5m9nDWKMPazCA==",
     "public_key_jwk": {
       "kty": "OKP",
       "crv": "Ed25519",
-      "x": "tFKZyC9qtNRZtVVIAb0bsFuPfA6uk53BEJX3N8LMz3c",
+      "x": "-twbjOnV_od0Z_T1pZI8UUJxF_kRG-q0nOEJjz46Vbo",
       "kid": "demo-ephemeral",
       "alg": "EdDSA",
       "use": "sig"

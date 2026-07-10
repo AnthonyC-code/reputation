@@ -16,6 +16,18 @@ export function SiteHeader() {
             Sample passport
           </Link>
           <Link
+            href="/platforms"
+            className="hidden hover:text-neutral-900 sm:inline dark:hover:text-neutral-100"
+          >
+            For marketplaces
+          </Link>
+          <Link
+            href="/docs/api"
+            className="hidden hover:text-neutral-900 sm:inline dark:hover:text-neutral-100"
+          >
+            API
+          </Link>
+          <Link
             href="/#early-access"
             className="rounded-lg bg-emerald-600 px-3 py-1.5 font-medium text-white hover:bg-emerald-700"
           >

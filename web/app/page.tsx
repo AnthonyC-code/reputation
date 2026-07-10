@@ -156,6 +156,15 @@ export default function Home() {
         <p className="mt-3 text-xs text-neutral-500">
           One email, no newsletter. We reply personally.
         </p>
+        <p className="mt-6 text-sm text-neutral-600 dark:text-neutral-400">
+          Run a marketplace?{" "}
+          <Link
+            href="/platforms"
+            className="font-medium text-emerald-700 underline dark:text-emerald-400"
+          >
+            See the reputation API →
+          </Link>
+        </p>
       </section>
     </main>
   );

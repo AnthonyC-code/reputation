@@ -59,3 +59,6 @@ lint-web:
 build:
 	cd api && go build ./...
 	cd web && pnpm build
+
+openapi-sync: ## copy the canonical spec to the web app's public dir
+	cp docs/api/openapi.yaml web/public/openapi.yaml

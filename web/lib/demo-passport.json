@@ -148,15 +148,15 @@
       "type": "score.snapshot",
       "version": 1
     },
-    "signature_b64": "lQgDxlX+DgowiUthy/vMZkyieC7lkbFHC1oEbKTkTX/sR1/kx50hZQkvaYFFIAmNThmglsjk9RVDHkOe5rJPCg==",
+    "signature_b64": "w5HCYDODtaVwkweh7FB/Rgi2BN0iyL77BZd9ePiJAejcoXqYxRcLFCrDHnTIJhaY3IHuaHI0sOhQY9V/AEn3AA==",
     "public_key_jwk": {
       "kty": "OKP",
       "crv": "Ed25519",
-      "x": "ht1vuso8lHyVsLBqgqHuW1f4pWWTrpVz68nZCjY-z4E",
+      "x": "tFKZyC9qtNRZtVVIAb0bsFuPfA6uk53BEJX3N8LMz3c",
       "kid": "demo-ephemeral",
       "alg": "EdDSA",
       "use": "sig"
     },
-    "note": "Demo key generated at build time and discarded. Live passports are signed with the production key published at /.well-known/jwks.json."
+    "note": "Demo key generated at build time and discarded; its public half is published at /.well-known/demo-jwks.json — fetch it from there (pin by kid) rather than trusting the copy in this file. Live passports are signed with the production key at /.well-known/jwks.json."
   }
 }

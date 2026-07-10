@@ -21,6 +21,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/AnthonyC-code/reputation/api/internal/attest"
 	"github.com/AnthonyC-code/reputation/api/internal/config"
 	"github.com/AnthonyC-code/reputation/api/internal/httpapi"
 	"github.com/AnthonyC-code/reputation/api/migrations"
@@ -84,9 +85,19 @@ func serve(cfg config.Config, logger *slog.Logger) error {
 		}
 	}
 
+	var opts httpapi.Options
+	if cfg.AttestSigningKey != "" {
+		priv, err := base64.StdEncoding.DecodeString(cfg.AttestSigningKey)
+		if err != nil || len(priv) != ed25519.PrivateKeySize {
+			return fmt.Errorf("ATTEST_SIGNING_KEY is not a base64 ed25519 private key")
+		}
+		pub := ed25519.PrivateKey(priv).Public().(ed25519.PublicKey)
+		opts.JWKS = &attest.JWKS{Keys: []attest.JWK{attest.PublicKeyJWK(pub, cfg.AttestKID)}}
+	}
+
 	srv := &http.Server{
 		Addr:              cfg.APIAddr,
-		Handler:           httpapi.New(pool, logger),
+		Handler:           httpapi.New(pool, logger, opts),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 

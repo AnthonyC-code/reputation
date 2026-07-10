@@ -15,6 +15,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/AnthonyC-code/reputation/api/internal/attest"
@@ -71,6 +72,7 @@ type demoPassport struct {
 
 func main() {
 	out := flag.String("out", "../web/lib/demo-passport.json", "output path")
+	jwksOut := flag.String("jwks-out", "../web/public/.well-known/demo-jwks.json", "demo JWKS output path")
 	flag.Parse()
 
 	in := score.Input{Now: refNow, VerifiedConnections: 2}
@@ -140,6 +142,14 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Publish the demo verification key at a well-known URL, separate from
+	// the attestation itself, so verifiers pin the key by kid instead of
+	// trusting key material shipped alongside the signature.
+	if err := writeJWKS(*jwksOut, p.Attestation.PublicKey); err != nil {
+		fmt.Fprintln(os.Stderr, "writing demo jwks:", err)
+		os.Exit(1)
+	}
+
 	buf, err := json.MarshalIndent(p, "", "  ")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "marshal:", err)
@@ -150,6 +160,17 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Printf("wrote %s — score %.2f (%s), confidence %.3f\n", *out, p.Score.Overall, p.Score.Grade, p.Score.Confidence)
+}
+
+func writeJWKS(path string, jwk attest.JWK) error {
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return err
+	}
+	buf, err := json.MarshalIndent(attest.JWKS{Keys: []attest.JWK{jwk}}, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, append(buf, '\n'), 0o644)
 }
 
 func signDemo(p *demoPassport) error {
@@ -176,6 +197,6 @@ func signDemo(p *demoPassport) error {
 	p.Attestation.Payload = att.Payload
 	p.Attestation.Signature = base64.StdEncoding.EncodeToString(att.Signature)
 	p.Attestation.PublicKey = attest.PublicKeyJWK(pub, kid)
-	p.Attestation.Note = "Demo key generated at build time and discarded. Live passports are signed with the production key published at /.well-known/jwks.json."
+	p.Attestation.Note = "Demo key generated at build time and discarded; its public half is published at /.well-known/demo-jwks.json — fetch it from there (pin by kid) rather than trusting the copy in this file. Live passports are signed with the production key at /.well-known/jwks.json."
 	return nil
 }

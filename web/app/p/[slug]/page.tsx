@@ -20,18 +20,24 @@ const embedSnippet = `<a href="${passportUrl}"><img src="${badgeUrl}" alt="${p.s
 const verifySnippet = `// verify.mjs — check this passport's signature yourself (Node 20+, no deps)
 // 1. download ${passportUrl}/attestation.json
 // 2. node verify.mjs attestation.json
+// The verification key is fetched from our published key set — never
+// trusted from the attestation file itself.
 import { createPublicKey, createHash, verify } from "node:crypto";
 import { readFileSync } from "node:fs";
 
+const KEYS_URL = "${SITE_URL}/.well-known/demo-jwks.json"; // live keys: /.well-known/jwks.json
 const att = JSON.parse(readFileSync(process.argv[2], "utf8"));
+const jwks = await (await fetch(KEYS_URL)).json();
+const jwk = jwks.keys.find((k) => k.kid === att.kid);
+if (!jwk) throw new Error(\`key id \${att.kid} is not in the published key set\`);
 const payload = Buffer.from(JSON.stringify(att.payload));
 const msg = Buffer.concat([
   Buffer.from("reputation-passport:attestation:v1"),
   createHash("sha256").update(payload).digest(),
 ]);
-const key = createPublicKey({ key: att.public_key_jwk, format: "jwk" });
-const ok = verify(null, msg, key, Buffer.from(att.signature_b64, "base64"));
-console.log(ok ? "VALID — score and inputs are untampered" : "INVALID");`;
+const ok = verify(null, msg, createPublicKey({ key: jwk, format: "jwk" }),
+  Buffer.from(att.signature_b64, "base64"));
+console.log(ok ? "VALID — signed by Reputation Passport, untampered" : "INVALID");`;
 
 export const metadata: Metadata = {
   title: `${p.seller.name} — Reputation Passport${p.sample ? " (sample)" : ""}`,

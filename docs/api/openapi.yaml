@@ -1,0 +1,264 @@
+# Reputation Passport platform API — contract-first spec (AGENTS.md §5).
+# Any /v1 change updates this file in the same commit. A public copy is
+# served by the web app at /openapi.yaml (make openapi-sync).
+openapi: 3.1.0
+info:
+  title: Reputation Passport API
+  version: 1.0.0-preview
+  description: |
+    Query verified, cross-platform seller reputation. Every score response
+    carries an Ed25519 attestation verifiable offline against the keys at
+    /.well-known/jwks.json. Status: preview — contract committed, service in
+    development. Sandbox (`rp_test_` keys) serves clearly-labeled sample
+    sellers only.
+  contact:
+    email: anthonychenjiaqi@gmail.com
+servers:
+  - url: https://api.reputationpassport.dev
+security:
+  - apiKey: []
+paths:
+  /v1/passports/lookup:
+    get:
+      operationId: lookupPassport
+      summary: Look up a passport by verified identifier
+      description: |
+        Exactly one of `domain`, `email_sha256`, or the
+        `platform`+`platform_seller_id` pair must be provided. Only
+        identifiers the seller has verified are matchable.
+      parameters:
+        - name: domain
+          in: query
+          schema: { type: string }
+          description: Lowercased registrable domain, e.g. `wildflower-candle.example`.
+        - name: email_sha256
+          in: query
+          schema: { type: string, pattern: "^[0-9a-f]{64}$" }
+          description: Hex SHA-256 of the lowercased email. Raw emails are never accepted.
+        - name: platform
+          in: query
+          schema: { type: string, enum: [shopify, etsy, ebay] }
+        - name: platform_seller_id
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: Match found.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PassportResponse" }
+        "404": { $ref: "#/components/responses/Problem" }
+        "400": { $ref: "#/components/responses/Problem" }
+        "429": { $ref: "#/components/responses/Problem" }
+  /v1/passports/{id}:
+    get:
+      operationId: getPassport
+      summary: Fetch a passport by id or slug
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: The passport.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PassportResponse" }
+        "404": { $ref: "#/components/responses/Problem" }
+  /v1/passports/{id}/score:
+    get:
+      operationId: getScore
+      summary: Current score with inline attestation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Score snapshot.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [score, attestation, sample]
+                properties:
+                  score: { $ref: "#/components/schemas/Score" }
+                  attestation: { $ref: "#/components/schemas/Attestation" }
+                  sample: { type: boolean }
+  /v1/passports/{id}/attestations:
+    get:
+      operationId: listAttestations
+      summary: Attestation history (append-only, hash-chained)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: limit
+          in: query
+          schema: { type: integer, maximum: 100, default: 20 }
+      responses:
+        "200":
+          description: Attestations, newest first.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  attestations:
+                    type: array
+                    items: { $ref: "#/components/schemas/Attestation" }
+  /v1/verify:
+    post:
+      operationId: verifyAttestation
+      summary: Verify an attestation and check revocation
+      description: |
+        Offline verification (JWKS + RFC 8785 + Ed25519) never requires this
+        endpoint. Use it when you also need revocation status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [payload, signature_b64, kid]
+              properties:
+                payload: { type: object }
+                signature_b64: { type: string }
+                kid: { type: string }
+      responses:
+        "200":
+          description: Verification result.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid: { type: boolean }
+                  revoked: { type: boolean }
+                  revocation_reason: { type: [string, "null"] }
+  /.well-known/jwks.json:
+    get:
+      operationId: getJWKS
+      summary: Verification keys (no auth)
+      security: []
+      responses:
+        "200":
+          description: JSON Web Key Set. Retired keys remain published so old attestations verify forever.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  keys:
+                    type: array
+                    items: { $ref: "#/components/schemas/JWK" }
+components:
+  securitySchemes:
+    apiKey:
+      type: http
+      scheme: bearer
+      description: "`rp_live_...` or `rp_test_...` key."
+  responses:
+    Problem:
+      description: RFC 7807 problem+json error.
+      content:
+        application/problem+json:
+          schema:
+            type: object
+            required: [type, title, status, request_id]
+            properties:
+              type: { type: string }
+              title: { type: string }
+              status: { type: integer }
+              detail: { type: string }
+              request_id: { type: string }
+  schemas:
+    PassportResponse:
+      type: object
+      required: [passport, sample]
+      properties:
+        passport: { $ref: "#/components/schemas/Passport" }
+        sample:
+          type: boolean
+          description: Always true for sandbox data; never true in production.
+    Passport:
+      type: object
+      required: [id, slug, display_name, published, score, sources, attestation]
+      properties:
+        id: { type: string }
+        slug: { type: string }
+        display_name: { type: string }
+        published: { type: boolean }
+        member_since: { type: string }
+        identifiers:
+          type: array
+          items:
+            type: object
+            properties:
+              kind: { type: string, enum: [domain, email_sha256, platform_seller_id] }
+              value: { type: string }
+              verified: { type: boolean }
+        score: { $ref: "#/components/schemas/Score" }
+        stats:
+          type: object
+          properties:
+            orders: { type: integer }
+            reviews: { type: integer }
+            avg_rating: { type: number }
+            disputes: { type: integer }
+        sources:
+          type: array
+          items:
+            type: object
+            properties:
+              platform: { type: string }
+              kind: { type: string }
+              trust_level: { type: string, enum: [verified_api, csv_self_reported] }
+              count: { type: integer }
+        attestation: { $ref: "#/components/schemas/Attestation" }
+    Score:
+      type: object
+      required: [score_version, overall, grade, confidence, components]
+      properties:
+        score_version: { type: string, examples: [v1.0] }
+        overall: { type: number, minimum: 0, maximum: 100 }
+        grade: { type: string, enum: [A+, A, B, C, D] }
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Evidence volume behind the score; reported separately, never blended in.
+        components:
+          type: array
+          items:
+            type: object
+            properties:
+              key: { type: string, enum: [rating, defect, volume, recency, diversity, tenure] }
+              weight: { type: number }
+              raw: { type: number }
+              weighted: { type: number }
+        inputs:
+          type: object
+          description: Derived-input audit trail (see engine docs).
+    Attestation:
+      type: object
+      required: [kid, payload, signature_b64]
+      properties:
+        kid: { type: string }
+        payload:
+          type: object
+          description: JCS-canonicalized signed payload.
+        signature_b64: { type: string }
+        keys_url: { type: string }
+    JWK:
+      type: object
+      properties:
+        kty: { type: string, enum: [OKP] }
+        crv: { type: string, enum: [Ed25519] }
+        x: { type: string }
+        kid: { type: string }
+        alg: { type: string, enum: [EdDSA] }
+        use: { type: string, enum: [sig] }

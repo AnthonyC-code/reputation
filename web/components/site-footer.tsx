@@ -13,6 +13,24 @@ export function SiteFooter() {
             Sample passport
           </Link>
           <Link
+            href="/platforms"
+            className="hover:text-neutral-700 dark:hover:text-neutral-300"
+          >
+            For marketplaces
+          </Link>
+          <Link
+            href="/docs/api"
+            className="hover:text-neutral-700 dark:hover:text-neutral-300"
+          >
+            API preview
+          </Link>
+          <Link
+            href="/docs/verification"
+            className="hover:text-neutral-700 dark:hover:text-neutral-300"
+          >
+            How verification works
+          </Link>
+          <Link
             href="/privacy"
             className="hover:text-neutral-700 dark:hover:text-neutral-300"
           >

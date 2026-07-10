@@ -1,2 +1,3 @@
-# openapi.yaml is written in Phase 5 alongside the /v1 implementation.
-# Contract-first: any /v1 change updates this file in the same commit (AGENTS.md §5).
+# Canonical /v1 contract: openapi.yaml (this directory).
+# Contract-first: any /v1 change updates it in the same commit (AGENTS.md §5).
+# A public copy is served at /openapi.yaml — refresh with `make openapi-sync`.

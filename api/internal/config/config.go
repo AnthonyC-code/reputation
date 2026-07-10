@@ -13,6 +13,12 @@ type Config struct {
 	Env         string // dev | test | prod
 	APIAddr     string
 	DatabaseURL string
+
+	// Attestation signing key (base64 ed25519 private key) and its key id.
+	// Optional until Phase 3 completes; when unset, signing endpoints are
+	// disabled and the JWKS endpoint is not mounted.
+	AttestSigningKey string
+	AttestKID        string
 }
 
 func Load() (Config, error) {
@@ -21,9 +27,11 @@ func Load() (Config, error) {
 	_ = godotenv.Load("../.env", ".env")
 
 	cfg := Config{
-		Env:         getenv("APP_ENV", "dev"),
-		APIAddr:     getenv("API_ADDR", ":8080"),
-		DatabaseURL: getenv("DATABASE_URL", "postgres://passport:passport@localhost:5433/passport?sslmode=disable"),
+		Env:              getenv("APP_ENV", "dev"),
+		APIAddr:          getenv("API_ADDR", ":8080"),
+		DatabaseURL:      getenv("DATABASE_URL", "postgres://passport:passport@localhost:5433/passport?sslmode=disable"),
+		AttestSigningKey: os.Getenv("ATTEST_SIGNING_KEY"),
+		AttestKID:        getenv("ATTEST_KID", "dev-k1"),
 	}
 	switch cfg.Env {
 	case "dev", "test", "prod":

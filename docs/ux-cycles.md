@@ -83,3 +83,45 @@ and a zombie `next start` process was serving a stale build during testing
 
 **Rejected/deferred:** print stylesheet (low value until sellers actually
 print); seller logo uploads (needs real sellers + storage).
+
+## Cycle 3 — Marcus, marketplace trust & safety lead (the paying customer)
+
+**Gut reaction:** "I found nothing addressed to me. The substance is better
+than the site — the scoring engine is genuinely thoughtful and the verify
+flow actually works — but I'd archive the founder's email after 90 seconds."
+(The critic independently ran the verify script: VALID, then tampered a
+digit: INVALID.)
+
+**Criticisms (ranked) → disposition:**
+
+1. No API documentation of any kind → **accepted**: `/docs/api` preview page
+   with full sample lookup response (assembled from the real engine JSON so
+   docs can't drift), auth format, RFC 7807 no-match example, rate-limit
+   headers, endpoint list; canonical `docs/api/openapi.yaml` written and
+   served at `/openapi.yaml` (`make openapi-sync`).
+2. No demand-side page → **accepted**: `/platforms` — the onboarding
+   scenario in the buyer's words, invite-flow wedge, design-partner CTA with
+   platform-specific mailto; linked from header, footer, and landing.
+3. Trust model never explained to a skeptic → **accepted**:
+   `/docs/verification` — chain of custody, provenance labels with the
+   actual engine rules (self-reports half-weighted, zero dispute evidence,
+   grade-B cap), identity binding, and an explicit "what the signature does
+   NOT prove" section.
+4. No pricing signal → **accepted**: pricing section on `/platforms`
+   (design partners free, expected per-lookup metered with tiers).
+5. Startup-mortality question unanswered → **accepted**: continuity section
+   on `/platforms` (offline verification survives us; cache and re-verify;
+   integrate async/advisory).
+6. Demo attestation was self-attesting → **accepted**: demo public key now
+   published at `/.well-known/demo-jwks.json`; verify script fetches it and
+   pins by kid instead of trusting the key in the attestation file. Tested
+   end to end (valid + tampered).
+7. Coverage/lookup semantics undefined → **accepted**: identifier list +
+   no-match response documented in `/docs/api`; cold-start invite flow
+   pitched honestly on `/platforms`.
+
+**Also shipped:** `/.well-known/jwks.json` endpoint on passportd (served
+when ATTEST_SIGNING_KEY is configured, 404 otherwise; tested).
+
+**Stale finding (no action):** the critic caught the working tree mid-edit
+and reported a compile break; the tree tested green at commit time.

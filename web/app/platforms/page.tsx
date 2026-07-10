@@ -70,7 +70,7 @@ export default function PlatformsPage() {
         <p className="mt-2 text-neutral-700 dark:text-neutral-300">
           The architecture makes continuity a feature, not a promise. Every
           passport response is signed; signatures verify offline, forever,
-          against keys published at{" "}
+          against keys that will be published at{" "}
           <code className="text-sm">
             api.reputationpassport.dev/.well-known/jwks.json
           </code>

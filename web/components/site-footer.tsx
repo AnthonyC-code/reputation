@@ -37,7 +37,7 @@ export function SiteFooter() {
             Privacy
           </Link>
           <a
-            href="mailto:anthonychenjiaqi@gmail.com"
+            href="mailto:anthonychenjiaqi@gmail.com?subject=Reputation%20Passport"
             className="hover:text-neutral-700 dark:hover:text-neutral-300"
           >
             Contact

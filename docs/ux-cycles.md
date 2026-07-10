@@ -173,3 +173,38 @@ backend is a /healthz endpoint."
 **Credit from the auditor worth keeping:** every number on the site checks
 out against the engine; the demo is genuinely engine-generated; heading
 hierarchy and pre-block overflow were already clean.
+
+## Cycle 5 — Design-partner demo dry run (both personas, end to end)
+
+**Verdicts:** seller **would reply** to the early-access email (no dead
+ends; badge snippet pasted into a local HTML file rendered and linked
+correctly); marketplace PM **would take the call** (/platforms answers
+cold-start, vendor-death, and pricing unprompted; the critic extracted the
+verify script verbatim from the page and got VALID→INVALID on tamper —
+"a live-demo wow moment, not a liability").
+
+**Findings (ranked by demo embarrassment) → disposition:**
+
+1. "Visit store ↗" on the money page linked to a third-party 404 →
+   **fixed**: the sample passport renders the fictional domain
+   (wildflower-candle.example, RFC 2606) as plain text; real passports keep
+   the link.
+2. `reputationpassport.dev` referenced in present tense but unregistered →
+   **fixed** the one present-tense case (/platforms → "will be published
+   at"); **founder to-do: register the domain before outreach.**
+3. Localhost baked into embed/share/verify/OG URLs when
+   `NEXT_PUBLIC_SITE_URL` is unset → correct behavior locally; **deploy
+   checklist item: set NEXT_PUBLIC_SITE_URL in production** (already in
+   .env.example).
+4. Personal Gmail as the whole contact surface → acknowledged; switch to
+   founder@domain when the domain exists. Footer mailto got a subject
+   prefill.
+5. robots.txt / sitemap.xml missing → **added** (app/robots.ts,
+   app/sitemap.ts).
+6. Trivia noted, not fixed: 404 page title; clipboard needs a secure
+   context; **run `make demo-data` before demos** so the sample's
+   "as of" date and recency stats stay fresh.
+
+**Verified clean by the critic:** every internal link on all pages resolves;
+OpenAPI matches /docs/api endpoint-for-endpoint; score math consistent
+across page, attestation, and API sample; no placeholder text anywhere.

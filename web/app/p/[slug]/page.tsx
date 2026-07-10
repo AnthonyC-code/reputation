@@ -100,13 +100,18 @@ export default async function PassportPage({
             </p>
             <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
               {p.seller.location} · Selling since {p.seller.member_since} ·{" "}
-              <a
-                href={p.seller.website}
-                rel="nofollow noopener"
-                className="underline hover:text-neutral-700 dark:hover:text-neutral-300"
-              >
-                Visit store ↗
-              </a>
+              {p.sample ? (
+                // The sample store is fictional — show the domain, link nothing.
+                <span>{new URL(p.seller.website).hostname}</span>
+              ) : (
+                <a
+                  href={p.seller.website}
+                  rel="nofollow noopener"
+                  className="underline hover:text-neutral-700 dark:hover:text-neutral-300"
+                >
+                  Visit store ↗
+                </a>
+              )}
             </p>
           </div>
         </div>

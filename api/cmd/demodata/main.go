@@ -124,7 +124,9 @@ func main() {
 	p.Seller.Location = "Austin, TX"
 	p.Seller.MemberSince = refNow.AddDate(0, 0, -1420).Format("January 2006")
 	p.Seller.Tagline = "Hand-poured soy candles, shipped nationwide"
-	p.Seller.Website = "https://example.com/wildflower-candle-co"
+	// .example TLD (RFC 2606) — deliberately unresolvable; the page renders
+	// it as plain text for the sample rather than a clickable dead link.
+	p.Seller.Website = "https://wildflower-candle.example"
 	p.Score = score.Compute(in)
 	p.Stats.Orders = orders
 	p.Stats.Reviews = reviews

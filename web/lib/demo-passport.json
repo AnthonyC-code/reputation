@@ -8,7 +8,7 @@
     "location": "Austin, TX",
     "member_since": "August 2022",
     "tagline": "Hand-poured soy candles, shipped nationwide",
-    "website": "https://example.com/wildflower-candle-co"
+    "website": "https://wildflower-candle.example"
   },
   "score": {
     "score_version": "v1.0",
@@ -171,11 +171,11 @@
       "type": "score.snapshot",
       "version": 1
     },
-    "signature_b64": "iCQjGbyBheOh15EY0xPYQfqdGbKEhLEFPtCQl+j6ALqd3A1CIjWZxGtYvcOwa2ZVJRE32Rnxe5m9nDWKMPazCA==",
+    "signature_b64": "EHQosHPvKIfUs9gLxDFm+aD/xZXXLK+R+QmU1OVrQ5twapWSewvCDDIomQaW86C2D9moqHss1yzNtlx0UKtIDA==",
     "public_key_jwk": {
       "kty": "OKP",
       "crv": "Ed25519",
-      "x": "-twbjOnV_od0Z_T1pZI8UUJxF_kRG-q0nOEJjz46Vbo",
+      "x": "ANJ4FPA_lEvmuglP3L7qRwH7QyEXjY_ju8fPeL88eZQ",
       "kid": "demo-ephemeral",
       "alg": "EdDSA",
       "use": "sig"

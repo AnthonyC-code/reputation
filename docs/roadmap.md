@@ -44,17 +44,17 @@ DoD: real dev store → events in Postgres; re-run backfill is a no-op; tokens n
 
 ## Phase 3 — Scoring + attestations (1 wk)
 
-- [ ] Score engine v1 (see `docs/adr/0003` when written): Bayesian rating mean, Wilson dispute bound, volume/recency/diversity/tenure; confidence separate; golden tests
+- [x] Score engine v1: Bayesian rating mean, Wilson dispute bound, volume/recency/diversity/tenure; confidence separate; golden tests *(pulled forward during the July 2026 UX cycles — `api/internal/score`)*
 - [ ] `score_snapshots` after sync; skip when `inputs_hash` unchanged
-- [ ] Ed25519 attestations (JCS canonical payloads, domain-separated), hash chain, JWKS endpoint, `POST /v1/verify`
-- [ ] ADR-0003 scoring, ADR-0004 attestation format
+- [x] Ed25519 attestations (JCS canonical payloads, domain-separated), hash-chain + JWKS primitives, JWKS endpoint on passportd *(pulled forward — `api/internal/attest`; the persisted append-only log, `POST /v1/verify`, and revocation still land here)*
+- [ ] ADR-0003 scoring, ADR-0004 attestation format *(write from the shipped code + `/docs/verification` copy)*
 
 DoD: sync → snapshot → attestation verifiable with only the published public key.
 
 ## Phase 4 — Public passport + badge + dashboard (1.5 wk)
 
-- [ ] `/p/[slug]` public page: ISR + on-demand revalidation, renders without client JS, JSON-LD AggregateRating, per-platform provenance
-- [ ] Badge: `public/embed.js` → iframe + backlink; static SVG route
+- [ ] `/p/[slug]` public page: ISR + on-demand revalidation, renders without client JS, JSON-LD AggregateRating, per-platform provenance *(design + copy shipped as the static `/p/demo` sample during the UX cycles; this item becomes "wire it to real data")*
+- [ ] Badge: `public/embed.js` → iframe + backlink; static SVG route *(SVG badge route + embed snippet shipped for the sample; embed.js iframe variant still to do)*
 - [ ] Dashboard: connections/sync status, score chart, embed snippet, publish toggle
 - [ ] DNS TXT domain verification for `seller_identifiers`
 - [ ] GDPR `SellerDeletionJob` + dashboard delete flow

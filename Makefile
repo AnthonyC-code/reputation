@@ -34,6 +34,9 @@ migrate-new: ## create a migration: make migrate-new NAME=add_foo
 sqlc: ## regenerate internal/store from queries/*.sql
 	cd api && go tool sqlc generate
 
+demo-data: ## regenerate web/lib/demo-passport.json via the real score engine
+	cd api && go run ./cmd/demodata
+
 # ---- quality ----
 
 test: test-go test-web

@@ -1,0 +1,33 @@
+import Link from "next/link";
+
+export function SiteFooter() {
+  return (
+    <footer className="border-t border-neutral-200 px-6 py-8 text-sm text-neutral-500 dark:border-neutral-800">
+      <div className="mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-4">
+        <p>
+          Built by Anthony Chen ·{" "}
+          <a
+            href="mailto:anthonychenjiaqi@gmail.com"
+            className="underline hover:text-neutral-700 dark:hover:text-neutral-300"
+          >
+            anthonychenjiaqi@gmail.com
+          </a>
+        </p>
+        <nav className="flex gap-4">
+          <Link
+            href="/p/demo"
+            className="hover:text-neutral-700 dark:hover:text-neutral-300"
+          >
+            Sample passport
+          </Link>
+          <Link
+            href="/privacy"
+            className="hover:text-neutral-700 dark:hover:text-neutral-300"
+          >
+            Privacy
+          </Link>
+        </nav>
+      </div>
+    </footer>
+  );
+}

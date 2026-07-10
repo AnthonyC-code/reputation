@@ -1,0 +1,88 @@
+{
+  "sample": true,
+  "generated_by": "reputation score engine v1.0 (api/internal/score)",
+  "as_of": "2026-07-01",
+  "seller": {
+    "name": "Wildflower Candle Co.",
+    "slug": "demo",
+    "location": "Austin, TX",
+    "member_since": "August 2022",
+    "tagline": "Hand-poured soy candles, shipped nationwide"
+  },
+  "score": {
+    "score_version": "v1.0",
+    "overall": 93.16,
+    "grade": "A+",
+    "confidence": 0.947,
+    "components": [
+      {
+        "key": "rating",
+        "weight": 40,
+        "raw": 0.9391,
+        "weighted": 37.56
+      },
+      {
+        "key": "defect",
+        "weight": 25,
+        "raw": 0.9906,
+        "weighted": 24.77
+      },
+      {
+        "key": "volume",
+        "weight": 15,
+        "raw": 0.9128,
+        "weighted": 13.69
+      },
+      {
+        "key": "recency",
+        "weight": 10,
+        "raw": 0.9923,
+        "weighted": 9.92
+      },
+      {
+        "key": "diversity",
+        "weight": 5,
+        "raw": 0.6667,
+        "weighted": 3.33
+      },
+      {
+        "key": "tenure",
+        "weight": 5,
+        "raw": 0.7781,
+        "weighted": 3.89
+      }
+    ],
+    "inputs": {
+      "orders_12mo_weighted": 547,
+      "verified_orders_24mo": 1095,
+      "defects_24mo": 4,
+      "reviews_total": 473,
+      "days_since_last_sale": 1,
+      "tenure_years": 3.8904109589041096,
+      "effective_events": 901.6674881844987,
+      "all_self_reported": false
+    }
+  },
+  "stats": {
+    "orders": 2130,
+    "reviews": 473,
+    "avg_rating": 4.9,
+    "disputes": 6
+  },
+  "sources": [
+    {
+      "platform": "Shopify",
+      "kind": "Orders \u0026 disputes",
+      "status": "verified_api",
+      "count": 2130,
+      "detail": "Imported read-only via the official Shopify Admin API"
+    },
+    {
+      "platform": "Judge.me",
+      "kind": "Product reviews",
+      "status": "verified_api",
+      "count": 473,
+      "detail": "Review history imported via the official Judge.me API"
+    }
+  ]
+}

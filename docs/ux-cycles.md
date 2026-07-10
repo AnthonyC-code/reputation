@@ -309,3 +309,56 @@ not the system but execution debris."
 fillers needed escaping — caught when the badge 404'd in <img>); stranger
 verify flow VALID / VALID (reordered) / INVALID (tampered) re-run after
 the page rework; zero unicode glyphs on every route; OG renders in-system.
+
+## Polish cycle 3 — Bug hunt (parallel QA + code-audit subagents)
+
+**QA subagent (Playwright-driven, all routes × 390/768/1440 × both
+schemes) — must-fix findings → all fixed:**
+
+1. Horizontal page scroll on every route at 390px: the header nav
+   (wordmark + three links + button) was 471px wide → wordmark text now
+   seal-only below sm; nav fits, `scrollWidth == innerWidth` verified on
+   all routes at 390 and 768.
+2. Hero grid texture (`-inset-10`) bled 40px past the viewport at 768px →
+   now `-inset-y-8 -left-8 right-0`; leftward bleed doesn't scroll.
+3. `--ink-tertiary` failed WCAG AA for small text on every route in BOTH
+   schemes (worst 3.80:1 on sunken; the plan's §9 estimate was wrong) →
+   token darkened/brightened to #626B66 / #808A84 (≥4.5:1 on paper,
+   surface, and sunken in both schemes, computed); badge SVG `.muted`
+   updated to match.
+
+**QA minor:** confidence caption rounded 94.7% up to 95% → now floored
+(never overstate a trust figure). localhost URLs in sitemap/OG/embed
+remain the documented NEXT_PUBLIC_SITE_URL deploy-checklist item (cycle 5,
+July critique).
+
+**QA clean:** zero console errors; dark mode has no light-token leaks;
+semantics (one h1/main, no heading skips, landmarks, alts) clean; every
+interactive element shows the 2px accent focus ring; skip link works on
+all routes; details/summary keyboard-operable; 404 status correct; badge
+XML valid with dark variant; OG 1200×630 PNG; data consistent across
+page/badge/meta/attestation.
+
+**Code-audit subagent — findings → disposition:**
+
+- Dead `Key`/`FileText` icons (spec'd, never used) → deleted.
+- OG image route had no `slug !== "demo"` guard (page and badge both
+  guard) → guard added.
+- Elided API-docs sample made `attestation.payload` a string while the
+  OpenAPI contract types it as object → placeholder is an object again.
+- `mrzField` erased accented names (Ünterwald → NTERWALD) → NFKD
+  normalize + strip combining marks; CJK names still become filler
+  (acceptable until international sellers exist; noted). Regex `+`
+  exception contradicting its comment removed.
+- Badge `xmlEscape` now also escapes quotes (attribute-safe); confirmed no
+  seller free text reaches the SVG today.
+- Noted, not fixed (single-demo world): docNumber is constant
+  RP-{year}-0001 — needs a real ID scheme when a second passport ships.
+- Clean: ShieldMark/favicon fully gone, no unused imports, Satori
+  constraints verified (· and … present in bundled Geist), go vet + go
+  test green, demo data untouched by redesign, zero legacy Tailwind
+  classes remain.
+
+**Verified:** lint/typecheck green, Go tests green (integration skips
+without Docker as documented), no horizontal overflow at 390/768 on any
+route, verify flow VALID / INVALID re-run, 390px header screenshot clean.

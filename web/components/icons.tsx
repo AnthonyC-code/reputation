@@ -77,25 +77,6 @@ export function Seal(props: IconProps) {
   );
 }
 
-export function Key(props: IconProps) {
-  return (
-    <Icon {...props}>
-      <circle cx="5.5" cy="10.5" r="2.75" />
-      <path d="M7.5 8.5L13 3M11 5l2 2M9.5 6.5l1.5 1.5" />
-    </Icon>
-  );
-}
-
-export function FileText(props: IconProps) {
-  return (
-    <Icon {...props}>
-      <path d="M3.5 1.5h6l3 3v10h-9z" />
-      <path d="M9.5 1.5v3h3" />
-      <path d="M6 8.5h4M6 11h4" />
-    </Icon>
-  );
-}
-
 export function AlertTriangle(props: IconProps) {
   return (
     <Icon {...props}>

@@ -5,11 +5,14 @@ import type { PassportData } from "./demo";
 
 const LINE_LENGTH = 44;
 
-// Uppercase and replace filler (spaces, punctuation) with `<`, MRZ-style.
+// Uppercase, strip diacritics, and replace filler (spaces, punctuation)
+// with `<`, MRZ-style. Non-Latin scripts fall through to filler.
 function mrzField(value: string): string {
   return value
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
     .toUpperCase()
-    .replace(/[^A-Z0-9+]+/g, "<")
+    .replace(/[^A-Z0-9]+/g, "<")
     .replace(/^<+|<+$/g, "");
 }
 

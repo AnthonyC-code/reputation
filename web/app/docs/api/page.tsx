@@ -37,7 +37,11 @@ const lookupResponse = {
       kid: p.attestation.kid,
       // The real payload echoes the full signed score object — elided here.
       // Download the complete attestation from the sample passport page.
-      payload: "(full signed payload: score, stats, sources — see attestation.json on the sample passport)",
+      // Kept an object so the sample matches the OpenAPI schema type.
+      payload: {
+        elided:
+          "full signed payload (score, stats, sources) — download attestation.json from the sample passport",
+      },
       signature_b64: `${p.attestation.signature_b64.slice(0, 16)}…${p.attestation.signature_b64.slice(-8)}`,
       // Sample data is signed with the demo key; production responses point
       // at the API origin's JWKS.

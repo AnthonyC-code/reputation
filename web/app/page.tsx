@@ -69,7 +69,8 @@ export default function Home() {
           </p>
         </div>
         <div className="relative lg:col-span-5">
-          <div aria-hidden className="hero-grid absolute -inset-10" />
+          {/* right-0 keeps the decorative grid from widening the page. */}
+          <div aria-hidden className="hero-grid absolute -inset-y-8 -left-8 right-0" />
           <PassportCard />
         </div>
       </section>

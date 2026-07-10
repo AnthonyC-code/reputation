@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { notFound } from "next/navigation";
 import { demoPassport } from "@/lib/demo";
 import { mrzLines } from "@/lib/mrz";
 
@@ -15,7 +16,13 @@ export function generateStaticParams() {
   return [{ slug: "demo" }];
 }
 
-export default async function OGImage() {
+export default async function OGImage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  if (slug !== "demo") notFound();
   const p = demoPassport;
   const r = 110;
   const c = 2 * Math.PI * r;

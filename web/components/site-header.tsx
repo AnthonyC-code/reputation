@@ -13,7 +13,8 @@ export function SiteHeader() {
       <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <SealMark size={22} className="text-accent" />
-          <span className="whitespace-nowrap text-[15px] font-semibold">
+          {/* Seal-only below sm: the full nav doesn't fit a 390px viewport. */}
+          <span className="hidden whitespace-nowrap text-[15px] font-semibold sm:inline">
             Reputation Passport
           </span>
         </Link>

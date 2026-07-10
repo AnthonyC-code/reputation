@@ -60,7 +60,8 @@ export function ScoreRing({
         </text>
       </svg>
       <span className="mt-2 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-ink-tertiary">
-        {(confidence * 100).toFixed(0)}% evidence confidence
+        {/* floor, not round: never overstate a trust figure */}
+        {Math.floor(confidence * 100)}% evidence confidence
       </span>
     </div>
   );

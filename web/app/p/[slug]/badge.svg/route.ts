@@ -39,9 +39,15 @@ export async function GET(
 
 const MONO = "ui-monospace,'SF Mono',Menlo,monospace";
 
-// MRZ filler is `<`, which must be escaped inside SVG text nodes.
+// MRZ filler is `<`, which must be escaped inside SVG text nodes. Quotes
+// are covered too so the helper is safe in attribute position.
 function xmlEscape(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
 }
 
 function badgeSVG(v: {
@@ -63,7 +69,7 @@ function badgeSVG(v: {
     .seal { stroke: #0B5B44; }
     .ink { fill: #1A201D; }
     .sub { fill: #4C5551; }
-    .muted { fill: #717B75; }
+    .muted { fill: #626B66; }
     .mrz { fill: #9AA39D; }
     .brass { fill: #8F7332; }
     .warn { fill: #7A4F0E; }
@@ -73,7 +79,7 @@ function badgeSVG(v: {
       .seal { stroke: #3FBF8C; }
       .ink { fill: #E9EBE7; }
       .sub { fill: #A4ADA7; }
-      .muted { fill: #6F7973; }
+      .muted { fill: #808A84; }
       .mrz { fill: #545E58; }
       .brass { fill: #CDAA5E; }
       .warn { fill: #E0BC6C; }

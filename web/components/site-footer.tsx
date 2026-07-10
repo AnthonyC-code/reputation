@@ -1,44 +1,30 @@
 import Link from "next/link";
+import { Seal } from "./icons";
+
+const links = [
+  ["/p/demo", "Sample passport"],
+  ["/platforms", "For marketplaces"],
+  ["/docs/api", "API preview"],
+  ["/docs/verification", "How verification works"],
+  ["/privacy", "Privacy"],
+];
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-neutral-200 px-6 py-8 text-sm text-neutral-500 dark:text-neutral-400 dark:border-neutral-800">
-      <div className="mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-4">
-        <p>© Reputation Passport</p>
-        <nav aria-label="Footer" className="flex gap-4">
-          <Link
-            href="/p/demo"
-            className="hover:text-neutral-700 dark:hover:text-neutral-300"
-          >
-            Sample passport
-          </Link>
-          <Link
-            href="/platforms"
-            className="hover:text-neutral-700 dark:hover:text-neutral-300"
-          >
-            For marketplaces
-          </Link>
-          <Link
-            href="/docs/api"
-            className="hover:text-neutral-700 dark:hover:text-neutral-300"
-          >
-            API preview
-          </Link>
-          <Link
-            href="/docs/verification"
-            className="hover:text-neutral-700 dark:hover:text-neutral-300"
-          >
-            How verification works
-          </Link>
-          <Link
-            href="/privacy"
-            className="hover:text-neutral-700 dark:hover:text-neutral-300"
-          >
-            Privacy
-          </Link>
+    <footer className="border-t border-line px-6 py-8 text-[13px] text-ink-tertiary">
+      <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-4">
+        <p className="flex items-center gap-2">
+          <Seal size={14} />© Reputation Passport
+        </p>
+        <nav aria-label="Footer" className="flex flex-wrap gap-4">
+          {links.map(([href, label]) => (
+            <Link key={href} href={href} className="hover:text-ink">
+              {label}
+            </Link>
+          ))}
           <a
             href="mailto:anthonychenjiaqi@gmail.com?subject=Reputation%20Passport"
-            className="hover:text-neutral-700 dark:hover:text-neutral-300"
+            className="hover:text-ink"
           >
             Contact
           </a>

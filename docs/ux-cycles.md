@@ -208,3 +208,47 @@ verify script verbatim from the page and got VALID→INVALID on tamper —
 **Verified clean by the critic:** every internal link on all pages resolves;
 OpenAPI matches /docs/api endpoint-for-endpoint; score math consistent
 across page, attestation, and API sample; no placeholder text anywhere.
+
+---
+
+# Polish cycles (July 2026) — "The Ledger Document"
+
+Five cycles executing `docs/plans/ui-polish-cycles.md`: replace the
+default-Tailwind look (white bg, emerald accent, rounded cards, glyph
+icons) with a single design idea — the website is itself a verifiable
+document. Tokens, spec, and per-page directives live in the plan file.
+
+## Polish cycle 1 — Design system, identity, landing
+
+**Done:**
+
+- Screenshot tooling: `web/scripts/shoot.mjs` (Playwright) captures all 7
+  routes × light/dark × 1440/390 against a running `next start`; before
+  set archived in the session scratchpad.
+- Tokens (`globals.css`): paper/surface/sunken neutrals, ink scale,
+  hairline `line`/`line-strong`, viridian accent reserved for verification
+  semantics, brass for grades, warn/danger; all flipped for dark via
+  `prefers-color-scheme`; mapped to Tailwind v4 utilities via `@theme`.
+- Identity: seal logo (ring + dotted perforation + check) replaces the
+  shield in header/footer; new SVG favicon with dark-mode media query
+  (deleted favicon.ico); Geist Mono as the machine register (overlines,
+  tags, numbers — tabular-nums globally).
+- New primitives: `components/icons.tsx` (Check/Arrow/Star/Seal/Key/
+  FileText/AlertTriangle line icons replacing ✓ ↗ → ★),
+  `components/ui.tsx` (Overline + button styles: primary = solid ink,
+  accent never a fill), `lib/mrz.ts` (passport MRZ lines derived from
+  real passport data).
+- Landing rework: asymmetric 7/5 hero with live `<PassportCard/>`
+  (dotted-leader stat rows, brass grade, MRZ strip, masked grid texture)
+  rendered from the same engine data as /p/demo; works-with row as
+  hairline rule + mono tags (no pills); Connect/Verify/Carry as numbered
+  ledger rows (no card grid); data promises as a bordered
+  DATA ACCESS TERMS plate; left-aligned early-access section; copy pass
+  (≤1 em dash, no glyph decoration, sentence case).
+
+**Verified:** `make lint && make test` green; all routes 200; zero
+unicode glyph icons in rendered landing HTML; header/wordmark fixed to a
+single line at 390px; card MRZ sized to fit the card at 390px.
+
+**Deferred to cycle 2:** /p/demo, badge, OG card, docs/platforms/privacy/
+404 still on the old emerald styling (they inherit the new paper bg only).

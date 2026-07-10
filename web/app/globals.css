@@ -1,26 +1,90 @@
 @import "tailwindcss";
 
+/* "Ledger document" design tokens. Raw values live on :root and flip for
+   dark mode; the @theme block maps them to Tailwind utilities (bg-paper,
+   text-ink, border-line, ...). Accent is reserved for verification
+   semantics only — never a button fill. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --paper: #f7f7f4;
+  --surface: #ffffff;
+  --sunken: #efefea;
+  --line: #e4e4dc;
+  --line-strong: #c9c9bf;
+  --ink: #1a201d;
+  --ink-secondary: #4c5551;
+  --ink-tertiary: #717b75;
+  --accent: #0b5b44;
+  --accent-hover: #084232;
+  --accent-tint: #0b5b440f;
+  --brass: #8f7332;
+  --warn: #7a4f0e;
+  --warn-tint: #faf3e1;
+  --warn-line: #e6d6ae;
+  --danger: #a93230;
+  --card-shadow: 0 1px 2px rgb(20 26 23 / 0.06), 0 8px 24px rgb(20 26 23 / 0.05);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --paper: #0d110f;
+    --surface: #141917;
+    --sunken: #0a0d0b;
+    --line: #242b27;
+    --line-strong: #39423d;
+    --ink: #e9ebe7;
+    --ink-secondary: #a4ada7;
+    --ink-tertiary: #6f7973;
+    --accent: #3fbf8c;
+    --accent-hover: #5acfa0;
+    --accent-tint: #3fbf8c14;
+    --brass: #cdaa5e;
+    --warn: #e0bc6c;
+    --warn-tint: #241d10;
+    --warn-line: #453a1d;
+    --danger: #e5736e;
+    --card-shadow: 0 0 0 1px #39423d;
   }
 }
 
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-ink-tertiary: var(--ink-tertiary);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-tint: var(--accent-tint);
+  --color-brass: var(--brass);
+  --color-warn: var(--warn);
+  --color-warn-tint: var(--warn-tint);
+  --color-warn-line: var(--warn-line);
+  --color-danger: var(--danger);
+  --shadow-card: var(--card-shadow);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Hero-only 24px grid texture, faded with a radial mask. */
+.hero-grid {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--ink) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--ink) 4%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 45%, black, transparent);
 }

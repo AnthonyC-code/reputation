@@ -252,3 +252,60 @@ single line at 390px; card MRZ sized to fit the card at 390px.
 
 **Deferred to cycle 2:** /p/demo, badge, OG card, docs/platforms/privacy/
 404 still on the old emerald styling (they inherit the new paper bg only).
+
+## Polish cycle 2 — Flagship artifacts, docs sweep, design critic
+
+**Done:**
+
+- `/p/demo` rebuilt as one document frame: surface panel, 1px line-strong
+  border, 3px accent top rule; seal + document number header (no avatar
+  tile); ring re-cut (120px, 6px butt-cap stroke, mono numeral, brass
+  grade, mono confidence caption); sunken PASSPORT URL share strip;
+  4-column stats strip with hairline dividers (star icon, no ★); SEC. 01–04
+  mono section labels; component bars as 2px accent-on-line rules;
+  provenance as a real table (sunken mono header, tabular counts, VERIFIED
+  tags) with a stacked variant under 640px; shared code blocks; full-bleed
+  MRZ strip with SIG line as the frame's last element.
+- Badge redesigned as a trust seal: 4px-radius plate, seal mark + hairline
+  divider, mono score + brass grade, right-column mono stats, hairline
+  rule + MRZ micro-line, SAMPLE tag; dark variant via prefers-color-scheme
+  media query inside the SVG (works in <img> embeds).
+- OG card rebuilt in system tokens: paper bg, seal + letter-spaced brand
+  line, ink name, butt-cap viridian ring with brass grade, sunken MRZ
+  bottom strip.
+- Docs sweep: /platforms, /docs/api (all code blocks on the shared
+  header-bar component), /docs/verification, /privacy, 404 (seal with
+  danger slash + NO PASSPORT ON FILE overline) all moved to tokens; mono
+  overline eyebrows; numbered hairline lists replace circle bullets;
+  ArrowRight icons replace `→`.
+
+**Design critic (design-director persona) verdict:** "Designed, not
+generated … A seed investor would read taste here. What undermines it is
+not the system but execution debris."
+
+**Critic findings → disposition (all 11 fixed):**
+
+1. Whitespace collapsed around inline `<em>/<strong>` on /docs/verification
+   ("weretrieved", "weare honest", "claims:claiming") → fixed with explicit
+   `{" "}` (same bug class cycle 4 hit; verified zero occurrences in
+   rendered HTML on all routes).
+2. /privacy h2s unstyled (16px vs system 22px) → fixed.
+3. /docs/api 200-sample dumped the full attestation payload echo (~250
+   lines) → payload elided with a pointer to attestation.json; displayed
+   signature truncated.
+4. Provenance table's VERIFIED column off-screen at 390px with no
+   affordance → stacked card rows under sm.
+5. Missing spaces in /docs/api definition list → fixed with `{" "}`.
+6. Hero card MRZ clipped mid-glyph → sized to fit card at both widths.
+7. Mobile nav hid all demand-side links → API link now visible at 390px.
+8. /docs/verification em-dash budget (2 prose + 2 in meta description) →
+   recast; ≤1 everywhere.
+9. Embed snippet single line, always clipped → multi-line attribute-per-line.
+10. CTA plate headings 18px (off-scale) → 16px.
+11. Long JSON strings forcing scroll → truncated signature, shorter 404
+    detail.
+
+**Verified:** lint/typecheck green; badge SVG parses as XML (the MRZ `<`
+fillers needed escaping — caught when the badge 404'd in <img>); stranger
+verify flow VALID / VALID (reordered) / INVALID (tampered) re-run after
+the page rework; zero unicode glyphs on every route; OG renders in-system.

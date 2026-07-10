@@ -27,7 +27,7 @@ export function SiteHeader() {
           <Link href="/platforms" className="hidden hover:text-ink sm:inline">
             For marketplaces
           </Link>
-          <Link href="/docs/api" className="hidden hover:text-ink sm:inline">
+          <Link href="/docs/api" className="hover:text-ink">
             API
           </Link>
           <Link

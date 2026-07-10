@@ -59,7 +59,7 @@ export function PassportCard() {
         </div>
       </div>
 
-      <div className="overflow-hidden border-t border-line bg-sunken px-5 py-3 font-mono text-[11px] font-medium uppercase leading-relaxed tracking-[0.1em] whitespace-nowrap text-ink-tertiary">
+      <div className="overflow-hidden border-t border-line bg-sunken px-5 py-3 font-mono text-[10px] font-medium uppercase leading-relaxed tracking-[0.06em] whitespace-nowrap text-ink-tertiary sm:text-[11px] sm:tracking-[0.1em]">
         <div>{mrz1}</div>
         <div>{mrz2}</div>
       </div>

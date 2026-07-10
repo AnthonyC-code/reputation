@@ -16,9 +16,9 @@ export function CopyButton({ text, label }: { text: string; label: string }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       }}
-      className="rounded-md border border-neutral-300 px-2.5 py-1 text-xs font-medium hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-900"
+      className="shrink-0 whitespace-nowrap rounded-xs border border-line-strong px-2 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-ink-secondary hover:bg-sunken"
     >
-      {copied ? "Copied ✓" : label}
+      {copied ? "Copied" : label}
       <span aria-live="polite" className="sr-only">
         {copied ? "Copied to clipboard" : ""}
       </span>

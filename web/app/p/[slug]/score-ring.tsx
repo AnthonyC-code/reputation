@@ -9,56 +9,57 @@ export function ScoreRing({
   grade: string;
   confidence: number;
 }) {
-  const r = 52;
+  const r = 57;
   const c = 2 * Math.PI * r;
   const filled = (score / 100) * c;
 
   return (
     <div className="flex flex-col items-center">
       <svg
-        width="140"
-        height="140"
-        viewBox="0 0 140 140"
+        width="120"
+        height="120"
+        viewBox="0 0 120 120"
         role="img"
         aria-label={`Reputation score ${Math.round(score)} out of 100, grade ${grade}`}
       >
         <circle
-          cx="70"
-          cy="70"
+          cx="60"
+          cy="60"
           r={r}
           fill="none"
-          strokeWidth="10"
-          className="stroke-neutral-200 dark:stroke-neutral-800"
+          strokeWidth="6"
+          className="stroke-line"
         />
         <circle
-          cx="70"
-          cy="70"
+          cx="60"
+          cy="60"
           r={r}
           fill="none"
-          strokeWidth="10"
-          strokeLinecap="round"
-          className="stroke-emerald-500"
+          strokeWidth="6"
+          strokeLinecap="butt"
+          className="stroke-accent"
           strokeDasharray={`${filled} ${c - filled}`}
-          transform="rotate(-90 70 70)"
+          transform="rotate(-90 60 60)"
         />
         <text
-          x="70"
-          y="66"
+          x="60"
+          y="58"
           textAnchor="middle"
-          className="fill-current text-3xl font-semibold"
+          dominantBaseline="middle"
+          className="fill-ink font-mono text-[30px] font-semibold"
         >
           {Math.round(score)}
         </text>
         <text
-          x="70"
-          y="90"
+          x="60"
+          y="82"
           textAnchor="middle"
-          className="fill-emerald-700 text-base font-medium dark:fill-emerald-400"
+          className="fill-brass text-[15px] font-semibold"
         >
           {grade}
         </text>
       </svg>
-      <span className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+      <span className="mt-2 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-ink-tertiary">
         {(confidence * 100).toFixed(0)}% evidence confidence
       </span>
     </div>

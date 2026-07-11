@@ -117,8 +117,15 @@ export default function PlatformsPage() {
             Become a design partner
           </h2>
           <p className="mt-1 text-sm leading-[1.65] text-ink-secondary">
-            We&apos;re selecting 1–2 platforms to build the pilot with. Direct
-            line to the founder, sandbox access first.
+            We&apos;re selecting 1–2 platforms to build the pilot with.
+            Direct line to{" "}
+            <Link
+              href="/about"
+              className="underline decoration-line-strong underline-offset-[3px] hover:decoration-accent"
+            >
+              the founder
+            </Link>
+            , sandbox access first.
           </p>
         </div>
         <a

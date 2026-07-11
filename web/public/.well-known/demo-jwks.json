@@ -3,7 +3,7 @@
     {
       "kty": "OKP",
       "crv": "Ed25519",
-      "x": "ANJ4FPA_lEvmuglP3L7qRwH7QyEXjY_ju8fPeL88eZQ",
+      "x": "mmkGv6Ofj3tJZFUFJ0tN5FOi3vsypCGBvdar_ezJalg",
       "kid": "demo-ephemeral",
       "alg": "EdDSA",
       "use": "sig"

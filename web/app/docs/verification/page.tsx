@@ -134,8 +134,8 @@ export default function VerificationDocsPage() {
           <li>
             <strong className="text-ink">Plausibility checks:</strong> shop
             age, review-to-order ratios, and buyer-concentration signals ship
-            with the importer; anomalies flag a passport for manual review
-            before publication.
+            with the importer at launch; anomalies will flag a passport for
+            manual review before publication.
           </li>
         </ul>
       </section>

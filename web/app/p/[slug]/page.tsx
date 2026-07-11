@@ -14,6 +14,7 @@ import {
   Star,
 } from "@/components/icons";
 import { Overline, btnPrimary } from "@/components/ui";
+import { ScoreHistory } from "./score-history";
 import { ScoreRing } from "./score-ring";
 
 // Only the sample passport exists until real sellers onboard (Phase 4).
@@ -225,9 +226,29 @@ export default async function PassportPage({
             Six components, each capped so no single number can be gamed.
             Small samples are statistically discounted: five perfect reviews
             never look like five thousand. The confidence figure under the
-            ring says how much verified evidence backs the score.
+            ring says how much verified evidence backs the score.{" "}
+            <Link
+              href="/docs/score"
+              className="underline decoration-line-strong underline-offset-[3px] hover:decoration-accent"
+            >
+              Full formula and worked examples
+            </Link>
+            .
           </p>
-          <div className="mt-6 space-y-5">
+
+          <div className="mt-6">
+            <h3 className="text-base font-semibold">24-month history</h3>
+            <div className="mt-3">
+              <ScoreHistory />
+            </div>
+            <p className="mt-2 max-w-2xl text-xs leading-[1.65] text-ink-tertiary">
+              Computed monthly by the same engine over the same event history.
+              The score rises as history accumulates, and each dispute stops
+              counting 24 months after it occurred.
+            </p>
+          </div>
+
+          <div className="mt-8 space-y-5">
             {p.score.components.map((c) => {
               const meta = componentLabels[c.key] ?? {
                 label: c.key,

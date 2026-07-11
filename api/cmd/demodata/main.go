@@ -33,6 +33,26 @@ type source struct {
 	Detail   string `json:"detail"`
 }
 
+type historyPoint struct {
+	AsOf    string  `json:"as_of"` // "2026-07"
+	Overall float64 `json:"overall"`
+	Grade   string  `json:"grade"`
+}
+
+// scoreExample is a worked profile for /docs/score: fixed synthetic inputs,
+// output computed by the real engine. Clearly labeled sample data.
+type scoreExample struct {
+	Key     string       `json:"key"`
+	Title   string       `json:"title"`
+	Profile string       `json:"profile"` // human summary of the inputs
+	Result  score.Result `json:"result"`
+
+	// For the dispute-spike example: the same seller scored at an earlier
+	// date, while the disputes were still inside the 24-month window.
+	ThenAsOf string        `json:"then_as_of,omitempty"`
+	Then     *score.Result `json:"then,omitempty"`
+}
+
 type demoPassport struct {
 	Sample      bool   `json:"sample"`
 	GeneratedBy string `json:"generated_by"`
@@ -58,6 +78,11 @@ type demoPassport struct {
 
 	Sources []source `json:"sources"`
 
+	// Monthly score checkpoints computed by re-running the engine over the
+	// same event history with an earlier "now" — a real time series, not an
+	// illustration.
+	History []historyPoint `json:"history"`
+
 	// A genuinely verifiable signature over the score payload, produced by
 	// internal/attest with an ephemeral demo key (generated at build time,
 	// never persisted — real passports use the production signing key).
@@ -73,6 +98,7 @@ type demoPassport struct {
 func main() {
 	out := flag.String("out", "../web/lib/demo-passport.json", "output path")
 	jwksOut := flag.String("jwks-out", "../web/public/.well-known/demo-jwks.json", "demo JWKS output path")
+	examplesOut := flag.String("examples-out", "../web/lib/score-examples.json", "worked score examples output path")
 	flag.Parse()
 
 	in := score.Input{Now: refNow, VerifiedConnections: 2}
@@ -139,6 +165,21 @@ func main() {
 			Detail: "Review history imported via the official Judge.me API"},
 	}
 
+	// Trailing-24-month monthly checkpoints: same events, earlier "now"
+	// (the engine ignores events after its reference date).
+	for i := 23; i >= 0; i-- {
+		at := refNow.AddDate(0, -i, 0)
+		r := score.Compute(score.Input{Events: in.Events, VerifiedConnections: in.VerifiedConnections, Now: at})
+		p.History = append(p.History, historyPoint{
+			AsOf: at.Format("2006-01"), Overall: r.Overall, Grade: r.Grade,
+		})
+	}
+
+	if err := writeExamples(*examplesOut); err != nil {
+		fmt.Fprintln(os.Stderr, "writing score examples:", err)
+		os.Exit(1)
+	}
+
 	if err := signDemo(&p); err != nil {
 		fmt.Fprintln(os.Stderr, "signing demo attestation:", err)
 		os.Exit(1)
@@ -162,6 +203,146 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Printf("wrote %s — score %.2f (%s), confidence %.3f\n", *out, p.Score.Overall, p.Score.Grade, p.Score.Confidence)
+}
+
+func sale(daysAgo int) score.Event {
+	return score.Event{Type: score.EventSale, OccurredAt: refNow.AddDate(0, 0, -daysAgo), Trust: score.TrustVerifiedAPI}
+}
+
+func review(daysAgo int, stars float64) score.Event {
+	return score.Event{
+		Type: score.EventReview, OccurredAt: refNow.AddDate(0, 0, -daysAgo), Trust: score.TrustVerifiedAPI,
+		RatingValue: stars, RatingMin: 1, RatingMax: 5,
+	}
+}
+
+func dispute(daysAgo int) score.Event {
+	return score.Event{Type: score.EventDispute, OccurredAt: refNow.AddDate(0, 0, -daysAgo), Trust: score.TrustVerifiedAPI}
+}
+
+// writeExamples emits the three worked profiles rendered on /docs/score.
+// Inputs are fixed and synthetic; every output number comes from
+// score.Compute — the docs can't drift from the engine.
+func writeExamples(path string) error {
+	var examples []scoreExample
+
+	// (i) A new seller: seven months in, one storefront, a sale every other
+	// day, ~30 reviews, no disputes.
+	{
+		var in score.Input
+		in.Now = refNow
+		in.VerifiedConnections = 1
+		orders, reviews, fours := 0, 0, 0
+		for d := 1; d <= 210; d += 2 {
+			in.Events = append(in.Events, sale(d))
+			orders++
+		}
+		for d := 4; d <= 210; d += 7 {
+			stars := 5.0
+			if reviews%10 == 9 {
+				stars = 4
+				fours++
+			}
+			in.Events = append(in.Events, review(d, stars))
+			reviews++
+		}
+		avg := float64(reviews*5-fours) / float64(reviews)
+		examples = append(examples, scoreExample{
+			Key:   "new_seller",
+			Title: "Seven months in",
+			Profile: fmt.Sprintf(
+				"%d verified orders over 7 months, %d reviews averaging %.1f/5, no disputes, one connected storefront.",
+				orders, reviews, avg),
+			Result: score.Compute(in),
+		})
+	}
+
+	// (ii) An established seller who had a two-week dispute cluster ~25
+	// months ago. Scored twice: 13 months ago (cluster inside the 24-month
+	// defect window) and today (aged out).
+	{
+		var in score.Input
+		in.VerifiedConnections = 2
+		orders, reviews, fours := 0, 0, 0
+		for d := 1; d <= 1277; d += 3 {
+			in.Events = append(in.Events, sale(d))
+			orders++
+		}
+		for d := 2; d <= 1277; d += 9 {
+			stars := 5.0
+			if reviews%10 == 9 {
+				stars = 4
+				fours++
+			}
+			in.Events = append(in.Events, review(d, stars))
+			reviews++
+		}
+		for _, d := range []int{745, 752, 760, 768, 775} {
+			in.Events = append(in.Events, dispute(d))
+		}
+		then := refNow.AddDate(0, -13, 0)
+		in.Now = then
+		thenResult := score.Compute(in)
+		in.Now = refNow
+		avg := float64(reviews*5-fours) / float64(reviews)
+		examples = append(examples, scoreExample{
+			Key:   "dispute_spike",
+			Title: "A bad two weeks, two years ago",
+			Profile: fmt.Sprintf(
+				"%d verified orders over 3.5 years, %d reviews averaging %.1f/5, five disputes clustered ~25 months ago, two connected storefronts.",
+				orders, reviews, avg),
+			Result:   score.Compute(in),
+			ThenAsOf: then.Format("January 2006"),
+			Then:     &thenResult,
+		})
+	}
+
+	// (iii) A strong single-storefront seller: diversity is the only
+	// component they can't max out.
+	{
+		var in score.Input
+		in.Now = refNow
+		in.VerifiedConnections = 1
+		orders, reviews, fours := 0, 0, 0
+		for d := 1; d <= 1095; d++ {
+			in.Events = append(in.Events, sale(d))
+			if d%2 == 0 {
+				in.Events = append(in.Events, sale(d))
+				orders++
+			}
+			orders++
+		}
+		for d := 5; d <= 1095; d += 5 {
+			stars := 5.0
+			if reviews%10 == 9 {
+				stars = 4
+				fours++
+			}
+			in.Events = append(in.Events, review(d, stars))
+			reviews++
+		}
+		in.Events = append(in.Events, dispute(200), dispute(500))
+		avg := float64(reviews*5-fours) / float64(reviews)
+		examples = append(examples, scoreExample{
+			Key:   "single_storefront",
+			Title: "Shopify-only, three years strong",
+			Profile: fmt.Sprintf(
+				"%d verified orders over 3 years, %d reviews averaging %.1f/5, two disputes, one connected storefront.",
+				orders, reviews, avg),
+			Result: score.Compute(in),
+		})
+	}
+
+	buf, err := json.MarshalIndent(struct {
+		Sample      bool           `json:"sample"`
+		GeneratedBy string         `json:"generated_by"`
+		AsOf        string         `json:"as_of"`
+		Examples    []scoreExample `json:"examples"`
+	}{true, "reputation score engine " + score.Version + " (api/internal/score)", refNow.Format("2006-01-02"), examples}, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, append(buf, '\n'), 0o644)
 }
 
 func writeJWKS(path string, jwk attest.JWK) error {

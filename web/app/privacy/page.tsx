@@ -34,10 +34,9 @@ export default function PrivacyPage() {
       </h1>
       <p className="mt-4 text-sm leading-[1.65] text-ink-tertiary">
         Plain-English version, ahead of the full policy that ships with the
-        product launch. The service is pre-launch: these are the commitments
-        we are building to, stated in the tense they deserve, as promises
-        about the launched product rather than descriptions of code that
-        already runs.
+        product launch. The service is pre-launch: everything below is a
+        commitment about the launched product, not a description of code
+        that already runs.
       </p>
 
       <div className="mt-10">

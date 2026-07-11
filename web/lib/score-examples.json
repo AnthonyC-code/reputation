@@ -1,0 +1,239 @@
+{
+  "sample": true,
+  "generated_by": "reputation score engine v1.0 (api/internal/score)",
+  "as_of": "2026-07-01",
+  "examples": [
+    {
+      "key": "new_seller",
+      "title": "Seven months in",
+      "profile": "105 verified orders over 7 months, 30 reviews averaging 4.9/5, no disputes, one connected storefront.",
+      "result": {
+        "score_version": "v1.0",
+        "overall": 79.91,
+        "grade": "B",
+        "confidence": 0.69,
+        "components": [
+          {
+            "key": "rating",
+            "weight": 40,
+            "raw": 0.8374,
+            "weighted": 33.5
+          },
+          {
+            "key": "defect",
+            "weight": 25,
+            "raw": 0.9647,
+            "weighted": 24.12
+          },
+          {
+            "key": "volume",
+            "weight": 15,
+            "raw": 0.675,
+            "weighted": 10.13
+          },
+          {
+            "key": "recency",
+            "weight": 10,
+            "raw": 0.9923,
+            "weighted": 9.92
+          },
+          {
+            "key": "diversity",
+            "weight": 5,
+            "raw": 0.3333,
+            "weighted": 1.67
+          },
+          {
+            "key": "tenure",
+            "weight": 5,
+            "raw": 0.1145,
+            "weighted": 0.57
+          }
+        ],
+        "inputs": {
+          "orders_12mo_weighted": 105,
+          "verified_orders_24mo": 105,
+          "defects_24mo": 0,
+          "reviews_total": 30,
+          "days_since_last_sale": 1,
+          "tenure_years": 0.5726,
+          "effective_events": 111.31,
+          "all_self_reported": false
+        }
+      }
+    },
+    {
+      "key": "dispute_spike",
+      "title": "A bad two weeks, two years ago",
+      "profile": "426 verified orders over 3.5 years, 142 reviews averaging 4.9/5, five disputes clustered ~25 months ago, two connected storefronts.",
+      "result": {
+        "score_version": "v1.0",
+        "overall": 87.36,
+        "grade": "A",
+        "confidence": 0.811,
+        "components": [
+          {
+            "key": "rating",
+            "weight": 40,
+            "raw": 0.8889,
+            "weighted": 35.55
+          },
+          {
+            "key": "defect",
+            "weight": 25,
+            "raw": 0.9845,
+            "weighted": 24.61
+          },
+          {
+            "key": "volume",
+            "weight": 15,
+            "raw": 0.6965,
+            "weighted": 10.45
+          },
+          {
+            "key": "recency",
+            "weight": 10,
+            "raw": 0.9923,
+            "weighted": 9.92
+          },
+          {
+            "key": "diversity",
+            "weight": 5,
+            "raw": 0.6667,
+            "weighted": 3.33
+          },
+          {
+            "key": "tenure",
+            "weight": 5,
+            "raw": 0.6992,
+            "weighted": 3.5
+          }
+        ],
+        "inputs": {
+          "orders_12mo_weighted": 122,
+          "verified_orders_24mo": 244,
+          "defects_24mo": 0,
+          "reviews_total": 142,
+          "days_since_last_sale": 1,
+          "tenure_years": 3.4959,
+          "effective_events": 214.96,
+          "all_self_reported": false
+        }
+      },
+      "then_as_of": "June 2025",
+      "then": {
+        "score_version": "v1.0",
+        "overall": 85.08,
+        "grade": "A",
+        "confidence": 0.794,
+        "components": [
+          {
+            "key": "rating",
+            "weight": 40,
+            "raw": 0.8804,
+            "weighted": 35.22
+          },
+          {
+            "key": "defect",
+            "weight": 25,
+            "raw": 0.9527,
+            "weighted": 23.82
+          },
+          {
+            "key": "volume",
+            "weight": 15,
+            "raw": 0.6965,
+            "weighted": 10.45
+          },
+          {
+            "key": "recency",
+            "weight": 10,
+            "raw": 0.9847,
+            "weighted": 9.85
+          },
+          {
+            "key": "diversity",
+            "weight": 5,
+            "raw": 0.6667,
+            "weighted": 3.33
+          },
+          {
+            "key": "tenure",
+            "weight": 5,
+            "raw": 0.4827,
+            "weighted": 2.41
+          }
+        ],
+        "inputs": {
+          "orders_12mo_weighted": 122,
+          "verified_orders_24mo": 243,
+          "defects_24mo": 5,
+          "reviews_total": 98,
+          "days_since_last_sale": 2,
+          "tenure_years": 2.4137,
+          "effective_events": 192.7,
+          "all_self_reported": false
+        }
+      }
+    },
+    {
+      "key": "single_storefront",
+      "title": "Shopify-only, three years strong",
+      "profile": "1642 verified orders over 3 years, 219 reviews averaging 4.9/5, two disputes, one connected storefront.",
+      "result": {
+        "score_version": "v1.0",
+        "overall": 89.8,
+        "grade": "A",
+        "confidence": 0.94,
+        "components": [
+          {
+            "key": "rating",
+            "weight": 40,
+            "raw": 0.9172,
+            "weighted": 36.69
+          },
+          {
+            "key": "defect",
+            "weight": 25,
+            "raw": 0.9934,
+            "weighted": 24.83
+          },
+          {
+            "key": "volume",
+            "weight": 15,
+            "raw": 0.9128,
+            "weighted": 13.69
+          },
+          {
+            "key": "recency",
+            "weight": 10,
+            "raw": 0.9923,
+            "weighted": 9.92
+          },
+          {
+            "key": "diversity",
+            "weight": 5,
+            "raw": 0.3333,
+            "weighted": 1.67
+          },
+          {
+            "key": "tenure",
+            "weight": 5,
+            "raw": 0.6,
+            "weighted": 3
+          }
+        ],
+        "inputs": {
+          "orders_12mo_weighted": 547,
+          "verified_orders_24mo": 1095,
+          "defects_24mo": 2,
+          "reviews_total": 219,
+          "days_since_last_sale": 1,
+          "tenure_years": 3,
+          "effective_events": 782.99,
+          "all_self_reported": false
+        }
+      }
+    }
+  ]
+}

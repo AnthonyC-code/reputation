@@ -7,7 +7,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/p/demo",
     "/platforms",
     "/docs/api",
+    "/docs/score",
     "/docs/verification",
+    "/about",
     "/privacy",
   ].map((path) => ({ url: `${SITE_URL}${path}` }));
 }

@@ -5,7 +5,9 @@ const links = [
   ["/p/demo", "Sample passport"],
   ["/platforms", "For marketplaces"],
   ["/docs/api", "API preview"],
+  ["/docs/score", "How the score works"],
   ["/docs/verification", "How verification works"],
+  ["/about", "About"],
   ["/privacy", "Privacy"],
 ];
 

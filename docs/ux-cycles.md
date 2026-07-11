@@ -362,3 +362,56 @@ page/badge/meta/attestation.
 **Verified:** lint/typecheck green, Go tests green (integration skips
 without Docker as documented), no horizontal overflow at 390/768 on any
 route, verify flow VALID / INVALID re-run, 390px header screenshot clean.
+
+## Polish cycle 4 — Features through the investor + returning-seller lens
+
+**Critic subagent (seed-investor + returning-Shopify-seller personas)
+highlights:** provenance discipline called "communicated better than most
+funded companies manage" and the strongest credibility signal; biggest
+gaps were (investor) zero momentum/credibility signals — no founder, no
+motion — and (seller) no worked example for an imperfect seller, no plain
+answer to "does a dispute spike haunt me forever" or "am I penalized for
+being Shopify-only", and nothing visibly new for a returning visitor.
+
+**Shipped (critic's top-ranked items):**
+
+1. `/about` — founder note: named founder, the problem, the
+   blockchain-prototype-thrown-away story told straight, built-in-the-open
+   status honesty, and what early access concretely involves. Linked from
+   the landing early-access section, /platforms ("direct line to the
+   founder"), and the footer.
+2. `/docs/score` — full formula explainer: all six weights with their
+   discounts (Bayesian prior 25 pseudo-reviews @3.8/5, Wilson 95% bound,
+   24-month defect window, 1,000-order volume saturation, 90-day recency
+   half-life, connection cap 3, tenure cap 5), grade bands, confidence
+   formula, self-reported rules, versioning promise — plus three worked
+   profiles computed by the real engine via a new `writeExamples` in
+   api/cmd/demodata (emitted to web/lib/score-examples.json, regenerated
+   by `make demo-data`): a 7-month seller (79.9/B, 69% confidence — the
+   honest-middle example), a dispute-spike seller scored at two dates
+   proving the 24-month window (reliability 23.8→24.6/25, grade never
+   left A), and a Shopify-only seller (89.8/A — diversity is the only
+   capped component, ≤3.3 pts).
+3. Score history on /p/demo — 24 monthly checkpoints computed by re-running
+   the engine with earlier reference dates (real series, added to
+   demo-passport.json), rendered as a server-side SVG line (dataviz skill
+   consulted: single series in accent, text tokens for labels, recessive
+   integer gridlines, end dot + direct label, aria-label; no client JS per
+   the passport-page rule). Honest caption — the real series rises gently
+   91.1→93.2, so no invented "6-point crash" drama.
+4. Copy fold-ins: publish-control promise added to DATA ACCESS TERMS
+   ("You see your score privately first"); "The value doesn't wait for
+   them" slogan cut; Carry step made concrete; /docs/verification
+   plausibility-checks claim moved to launch tense; privacy tense sentence
+   de-writered; dated "Latest · Jul 2026" line added at the early-access
+   section for returning-visitor motion; worked-example scores shown to
+   one decimal so 79.9/B can't read as "80 B" across the grade boundary.
+
+**Deliberately not shipped:** /platforms FAQ (critic: the two hardest
+objections are already handled inline; revisit later). Fabricated
+momentum signals (fake logos/waitlist counts) were never on the table.
+
+**Verified:** lint/tests green; demo data regenerated (score unchanged
+93.16/A+; new ephemeral key) and the stranger verify flow re-run VALID /
+VALID (reordered) / INVALID (tampered); zero glyph icons on all 8 routes
+(new pages included); sitemap includes /about and /docs/score.

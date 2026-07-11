@@ -47,6 +47,11 @@ export interface PassportData {
     count: number;
     detail: string;
   }[];
+  history: {
+    as_of: string; // "2026-07"
+    overall: number;
+    grade: string;
+  }[];
   attestation: {
     kid: string;
     payload: Record<string, unknown>;

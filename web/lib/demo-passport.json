@@ -86,6 +86,128 @@
       "detail": "Review history imported via the official Judge.me API"
     }
   ],
+  "history": [
+    {
+      "as_of": "2024-08",
+      "overall": 91.08,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2024-09",
+      "overall": 91.2,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2024-10",
+      "overall": 91.31,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2024-11",
+      "overall": 91.39,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2024-12",
+      "overall": 91.49,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2025-01",
+      "overall": 91.59,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2025-02",
+      "overall": 91.71,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2025-03",
+      "overall": 91.79,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2025-04",
+      "overall": 91.86,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2025-05",
+      "overall": 91.95,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2025-06",
+      "overall": 92.1,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2025-07",
+      "overall": 92.19,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2025-08",
+      "overall": 92.29,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2025-09",
+      "overall": 92.37,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2025-10",
+      "overall": 92.46,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2025-11",
+      "overall": 92.54,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2025-12",
+      "overall": 92.63,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2026-01",
+      "overall": 92.72,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2026-02",
+      "overall": 92.81,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2026-03",
+      "overall": 92.94,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2026-04",
+      "overall": 92.99,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2026-05",
+      "overall": 93.08,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2026-06",
+      "overall": 93.17,
+      "grade": "A+"
+    },
+    {
+      "as_of": "2026-07",
+      "overall": 93.16,
+      "grade": "A+"
+    }
+  ],
   "attestation": {
     "kid": "demo-ephemeral",
     "payload": {
@@ -171,11 +293,11 @@
       "type": "score.snapshot",
       "version": 1
     },
-    "signature_b64": "EHQosHPvKIfUs9gLxDFm+aD/xZXXLK+R+QmU1OVrQ5twapWSewvCDDIomQaW86C2D9moqHss1yzNtlx0UKtIDA==",
+    "signature_b64": "s+Cg2r2NZTS+wc/2ckAYaoPbNUC8eYlIXsV3y2YkhAm/5SEr3nMNaOdjX15j//1LBf6LInu8+6tGMk13snY+AA==",
     "public_key_jwk": {
       "kty": "OKP",
       "crv": "Ed25519",
-      "x": "ANJ4FPA_lEvmuglP3L7qRwH7QyEXjY_ju8fPeL88eZQ",
+      "x": "mmkGv6Ofj3tJZFUFJ0tN5FOi3vsypCGBvdar_ezJalg",
       "kid": "demo-ephemeral",
       "alg": "EdDSA",
       "use": "sig"

@@ -27,7 +27,7 @@ const steps = [
   {
     n: "03",
     title: "Carry",
-    body: "A public passport page, an embeddable trust badge, and an API that shows marketplaces the seller behind the storefront.",
+    body: "A public passport page, an embeddable trust badge, and an API lookup that returns your signed, verifiable history to any marketplace you apply to.",
   },
 ];
 
@@ -35,6 +35,7 @@ const promises = [
   "Read-only access. We can never change anything in your store.",
   "We import order counts, dispute outcomes, ratings, and reviews: the facts that make up your track record.",
   "Your customers' names, emails, and addresses are never imported. Buyer data is stripped before anything is stored.",
+  "You see your score privately first. Nothing is public until you choose to publish.",
   "Disconnect anytime. Your imported data is deleted, and your passport with it if you choose.",
 ];
 
@@ -105,8 +106,7 @@ export default function Home() {
           Connect a store and you get a passport page, published only when you
           choose, plus a trust badge for your own site, your email signature,
           and your wholesale or marketplace applications. As platforms join,
-          they query your passport automatically. The value doesn&apos;t wait
-          for them.
+          they query your passport automatically.
         </p>
         <div className="mt-10">
           {steps.map((s) => (
@@ -141,6 +141,9 @@ export default function Home() {
 
       {/* Early access */}
       <section id="early-access" className="border-t border-line py-14">
+        <p className="mb-5 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-ink-tertiary">
+          Latest · Jul 2026 · score history + scoring explainer shipped
+        </p>
         <h2 className="text-[22px] font-semibold tracking-[-0.01em]">
           Be a founding seller
         </h2>
@@ -156,7 +159,11 @@ export default function Home() {
           Email us to join the list
         </a>
         <p className="mt-3 text-[13px] text-ink-tertiary">
-          One email, no newsletter. We reply personally.
+          One email, no newsletter. I reply personally (
+          <Link href="/about" className="underline underline-offset-[3px]">
+            here&apos;s who I am
+          </Link>
+          ).
         </p>
         <p className="mt-8 text-sm text-ink-secondary">
           Run a marketplace?{" "}

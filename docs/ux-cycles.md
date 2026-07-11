@@ -415,3 +415,56 @@ momentum signals (fake logos/waitlist counts) were never on the table.
 93.16/A+; new ephemeral key) and the stranger verify flow re-run VALID /
 VALID (reordered) / INVALID (tampered); zero glyph icons on all 8 routes
 (new pages included); sitemap includes /about and /docs/score.
+
+## Polish cycle 5 — Consistency audit + final dry run
+
+**Final critic (last-eyes persona, full 36-screenshot set + live link
+walk + verification run) verdict: "SHIP."** Confirmed working: every
+link on all nine routes resolves; the verify flow passes
+valid/reordered/tampered live; demo numbers agree across hero card,
+ring, badge, MRZ, meta, and signed JSON; dark mode and 390px hold on
+the newest pages; zero unicode glyphs and zero banned vocabulary
+anywhere, metadata included.
+
+**Must-fix findings → fixed:**
+
+1. Page said "94% evidence confidence" while the signed payload says
+   0.947 — exactly where skeptics are invited to look → the page now
+   shows the exact figure (94.7%), no rounding judgment at all.
+2. /p/demo prose exceeded the ≤1 em-dash budget (component explainer +
+   attestation note) → reworded; the note lives in api/cmd/demodata, so
+   demo data was regenerated (score unchanged 93.16/A+) and the verify
+   flow re-run against the new signature.
+3. 404 page reused the homepage <title> → its own "No passport on file"
+   metadata.
+
+**Consistency drift folded in (from the audit):** ledger rows unified on
+border-top rules and the 64/200/1fr grid across landing, /platforms,
+/docs/verification, and /docs/score (pts numeral now in the numeral
+column, ink-tertiary); 404 h1 on the canonical scale and its slashed
+seal moved into icons.tsx (SealSlash); /p/demo shell on the site's py-14
+rhythm; MRZ strips fade at the right edge instead of clipping
+mid-glyph; stray 12px arrow promoted to 14px; CTA plates byte-identical
+(ArrowRight removed from the /docs/api plate button).
+
+**Accepted as-is:** nav "API" vs footer "API preview" (390px header
+space constraint); /docs/api definition-list em-dash separators (uniform
+idiom, 1 prose em dash); differing mailto bodies (personal page is
+deliberately personal). **Deploy checklist (pre-existing):** set
+NEXT_PUBLIC_SITE_URL in production; run `make demo-data` before demos.
+
+**Final regression:** `make lint` + `make test` green (Go integration
+tests skip without Docker, as documented); all 14 routes/artifacts 200
+(+ real 404); no horizontal overflow on any route at 390/768/1440;
+36-screenshot final set archived in the session scratchpad alongside the
+"before" set from cycle 1.
+
+---
+
+**Series wrap-up.** Five commits (a03daaf, 4fe3148, 814884a, 17984c5, +
+this one), CI green on each. The site moved from default-Tailwind
+generic to a single authored system — the ledger document — with every
+number on it still traceable to the real scoring engine, and gained
+/docs/score, /about, and a 24-month engine-computed score history along
+the way. Critic verdicts across the series: "designed, not generated"
+(cycle 2) → "SHIP" (cycle 5).

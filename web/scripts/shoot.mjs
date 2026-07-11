@@ -18,7 +18,9 @@ const routes = [
   ["/p/demo", "passport"],
   ["/platforms", "platforms"],
   ["/docs/api", "docs-api"],
+  ["/docs/score", "docs-score"],
   ["/docs/verification", "docs-verification"],
+  ["/about", "about"],
   ["/privacy", "privacy"],
   ["/p/nope", "404"],
 ];

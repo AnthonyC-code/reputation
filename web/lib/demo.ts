@@ -74,7 +74,7 @@ export const demoPassport = demoJson as PassportData;
 export const componentLabels: Record<string, { label: string; explain: string }> = {
   rating: {
     label: "Review quality",
-    explain: "Weighted average of verified reviews — recent reviews count more, and small samples are discounted.",
+    explain: "Weighted average of verified reviews: recent reviews count more, and small samples are discounted.",
   },
   defect: {
     label: "Order reliability",

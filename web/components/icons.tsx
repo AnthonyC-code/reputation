@@ -86,6 +86,32 @@ export function AlertTriangle(props: IconProps) {
   );
 }
 
+// Seal with a diagonal slash — the 404 "no passport on file" mark.
+export function SealSlash({ size = 32, className }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      aria-hidden
+      className={className}
+    >
+      <circle cx="12" cy="12" r="10.25" strokeWidth="1.5" />
+      <circle
+        cx="12"
+        cy="12"
+        r="7.75"
+        strokeWidth="1"
+        strokeDasharray="0.1 2.1"
+        strokeLinecap="round"
+      />
+      <path d="M5 19L19 5" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 // Full wordmark seal: outer ring, dotted perforation, check. currentColor
 // so the caller sets the color (accent by default in the header).
 export function SealMark({ size = 22, className }: IconProps) {

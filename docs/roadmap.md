@@ -10,6 +10,13 @@ Agents: check the current phase above before starting work; update it (and
 tick checklists) when you complete items. Decisions that must not be
 relitigated go in `docs/adr/`.
 
+> **Web surface status (July 2026):** the public site completed five UI
+> polish cycles (`docs/plans/ui-polish-cycles.md`, log in
+> `docs/ux-cycles.md` § Polish cycles) — "ledger document" design system,
+> trust-seal badge, /docs/score explainer + /about, engine-generated score
+> history. Final dry-run verdict: SHIP. Demo prep: run `make demo-data`,
+> set `NEXT_PUBLIC_SITE_URL` in production.
+
 ## Phase 0 — Reset + scaffolding + CI (2–3 days)
 
 - [x] Archive Solana prototype to `legacy-solana` branch + `legacy-solana-final` tag; clean main

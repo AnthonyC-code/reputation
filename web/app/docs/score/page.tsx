@@ -82,12 +82,12 @@ export default function ScoreDocsPage() {
           {formulaRows.map(([label, weight, body]) => (
             <div
               key={label}
-              className="grid gap-2 border-t border-line py-5 sm:grid-cols-[200px_64px_1fr]"
+              className="grid gap-2 border-t border-line py-5 sm:grid-cols-[64px_200px_1fr]"
             >
-              <h3 className="text-base font-semibold">{label}</h3>
-              <span className="font-mono text-sm text-ink-secondary">
+              <span className="font-mono text-sm text-ink-tertiary">
                 {weight} pts
               </span>
+              <h3 className="text-base font-semibold">{label}</h3>
               <p className="text-sm leading-[1.65] text-ink-secondary">
                 {body}
               </p>
@@ -166,7 +166,7 @@ export default function ScoreDocsPage() {
                   {spike.then ? spike.then.overall.toFixed(1) : "–"}{" "}
                   {spike.then?.grade}
                 </span>{" "}
-                <ArrowRight size={12} className="inline text-ink-tertiary" />{" "}
+                <ArrowRight size={14} className="inline text-ink-tertiary" />{" "}
                 <span className="text-xl font-semibold">
                   {spike.result.overall.toFixed(1)}
                 </span>{" "}

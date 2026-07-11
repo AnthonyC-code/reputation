@@ -97,7 +97,7 @@ export default async function PassportPage({
   const [mrz1, mrz2] = mrzLines(p);
 
   return (
-    <main id="main" className="mx-auto w-full max-w-3xl flex-1 px-4 py-10 sm:px-6">
+    <main id="main" className="mx-auto w-full max-w-3xl flex-1 px-4 py-14 sm:px-6">
       {p.sample && (
         <div className="mb-6 flex gap-2.5 border-l-[3px] border-warn-line bg-warn-tint px-4 py-3 text-[13px] leading-[1.6] text-warn">
           <AlertTriangle size={16} className="mt-0.5 shrink-0" />
@@ -427,7 +427,7 @@ export default async function PassportPage({
         {/* MRZ strip */}
         <div
           aria-hidden
-          className="overflow-hidden border-t border-line bg-sunken px-5 py-4 font-mono text-[10px] font-medium uppercase leading-[1.9] tracking-[0.14em] whitespace-nowrap text-ink-tertiary sm:px-8 sm:text-xs"
+          className="overflow-hidden border-t border-line bg-sunken px-5 py-4 font-mono text-[10px] font-medium uppercase leading-[1.9] tracking-[0.14em] whitespace-nowrap text-ink-tertiary [mask-image:linear-gradient(90deg,black_88%,transparent)] sm:px-8 sm:text-xs"
         >
           <div>{mrz1}</div>
           <div>{mrz2}</div>

@@ -210,7 +210,6 @@ GET  /.well-known/jwks.json              # verification keys, on the API origin 
         </div>
         <Link href="/platforms" className={btnPrimary}>
           For marketplaces
-          <ArrowRight size={14} />
         </Link>
       </section>
     </main>

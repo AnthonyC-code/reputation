@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { SealSlash } from "@/components/icons";
 import { btnPrimary, btnSecondary } from "@/components/ui";
+
+export const metadata: Metadata = {
+  title: "No passport on file — Reputation Passport",
+  description:
+    "Nothing is issued at this address. Check the link for typos, or start from the homepage.",
+};
 
 export default function NotFound() {
   return (
@@ -7,30 +15,11 @@ export default function NotFound() {
       id="main"
       className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-24 text-center"
     >
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        aria-hidden
-        className="text-danger"
-      >
-        <circle cx="12" cy="12" r="10.25" strokeWidth="1.5" />
-        <circle
-          cx="12"
-          cy="12"
-          r="7.75"
-          strokeWidth="1"
-          strokeDasharray="0.1 2.1"
-          strokeLinecap="round"
-        />
-        <path d="M5 19L19 5" strokeWidth="1.8" strokeLinecap="round" />
-      </svg>
+      <SealSlash size={32} className="text-danger" />
       <p className="font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-danger">
         No passport on file
       </p>
-      <h1 className="text-3xl font-semibold tracking-tight">
+      <h1 className="text-4xl font-semibold tracking-[-0.025em]">
         No passport at this address
       </h1>
       <p className="max-w-md leading-[1.65] text-ink-secondary">

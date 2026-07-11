@@ -385,6 +385,6 @@ func signDemo(p *demoPassport) error {
 	p.Attestation.Payload = att.Payload
 	p.Attestation.Signature = base64.StdEncoding.EncodeToString(att.Signature)
 	p.Attestation.PublicKey = attest.PublicKeyJWK(pub, kid)
-	p.Attestation.Note = "Demo key generated at build time and discarded; its public half is published at /.well-known/demo-jwks.json — fetch it from there (pin by kid) rather than trusting the copy in this file. Live passports are signed with the production key at /.well-known/jwks.json."
+	p.Attestation.Note = "Demo key generated at build time and discarded; its public half is published at /.well-known/demo-jwks.json. Fetch it from there (pin by kid) rather than trusting the copy in this file. Live passports are signed with the production key at /.well-known/jwks.json."
 	return nil
 }

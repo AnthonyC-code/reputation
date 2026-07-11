@@ -66,7 +66,7 @@ export default function VerificationDocsPage() {
           {custodySteps.map(([title, body], i) => (
             <li
               key={title}
-              className="grid gap-2 border-b border-line py-5 last:border-b-0 sm:grid-cols-[64px_140px_1fr]"
+              className="grid gap-2 border-t border-line py-5 sm:grid-cols-[64px_200px_1fr]"
             >
               <span className="font-mono text-sm text-ink-tertiary">
                 0{i + 1}
